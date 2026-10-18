@@ -5,19 +5,34 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Um espaço para ler, escrever e compartilhar histórias.">
+  <meta name="theme-color" content="#593778">
   <title>Ledores e Escrevedores — Algo Mais</title>
+
   <style>
     * { box-sizing: border-box; }
+
+    :root {
+      --fundo: #fbf7ff;
+      --texto: #30233b;
+      --principal: #593778;
+      --navegacao: #43265c;
+      --botao: #70479a;
+      --destaque: #593778;
+      --borda: #eadff4;
+      --rodape: #685875;
+      --cartao: #ffffff;
+    }
 
     body {
       margin: 0;
       font-family: Georgia, serif;
-      background: #fbf7ff;
-      color: #30233b;
+      background: var(--fundo);
+      color: var(--texto);
+      transition: background 0.4s, color 0.4s;
     }
 
     header {
-      background: #593778;
+      background: var(--principal);
       color: white;
       padding: 24px 18px;
       text-align: center;
@@ -31,7 +46,7 @@
     header p { margin: 0; }
 
     nav {
-      background: #43265c;
+      background: var(--navegacao);
       padding: 13px;
       text-align: center;
     }
@@ -44,30 +59,70 @@
       padding: 5px;
     }
 
+    nav a:hover { text-decoration: underline; }
+
     main {
       max-width: 900px;
       margin: 35px auto;
       padding: 0 20px;
     }
 
-    .welcome {
-      background: white;
+    .welcome, .card, .recommendations {
+      background: var(--cartao);
       border-radius: 16px;
+    }
+
+    .welcome {
       padding: 30px 24px;
       text-align: center;
       box-shadow: 0 4px 18px #38204b12;
     }
 
-    .welcome h2 { color: #593778; }
+    .welcome h2, .card h3 {
+      color: var(--destaque);
+    }
 
     .button {
       display: inline-block;
-      background: #70479a;
+      background: var(--botao);
       color: white;
       padding: 12px 22px;
       border-radius: 9px;
       text-decoration: none;
       margin-top: 12px;
+    }
+
+    .button:hover { filter: brightness(1.1); }
+
+    .theme-banner {
+      margin-top: 24px;
+      padding: 22px;
+      text-align: center;
+      border-radius: 16px;
+      background: var(--principal);
+      color: white;
+    }
+
+    .theme-banner h2 {
+      margin: 0 0 10px;
+    }
+
+    .theme-banner p { margin: 8px 0; }
+
+    .recommendations {
+      margin-top: 18px;
+      padding: 24px;
+      border: 1px solid var(--borda);
+    }
+
+    .recommendations h2 {
+      color: var(--destaque);
+      margin-top: 0;
+    }
+
+    .reading-list {
+      padding-left: 22px;
+      line-height: 1.8;
     }
 
     .sections {
@@ -78,22 +133,82 @@
     }
 
     .card {
-      background: white;
       padding: 22px;
-      border-radius: 12px;
-      border: 1px solid #eadff4;
+      border: 1px solid var(--borda);
     }
-
-    .card h3 { color: #593778; }
 
     footer {
       text-align: center;
       padding: 25px;
-      color: #685875;
+      color: var(--rodape);
+    }
+
+    /* Festa Junina */
+    body[data-theme="junina"] {
+      --fundo: #fff8e8;
+      --texto: #49301e;
+      --principal: #b94725;
+      --navegacao: #285d83;
+      --botao: #287b50;
+      --destaque: #a43b20;
+      --borda: #f0d49b;
+      --rodape: #72533b;
+    }
+
+    /* Dia dos Namorados */
+    body[data-theme="namorados"] {
+      --fundo: #fff2f5;
+      --texto: #492632;
+      --principal: #a52d50;
+      --navegacao: #76223d;
+      --botao: #c04468;
+      --destaque: #a52d50;
+      --borda: #f2c9d5;
+      --rodape: #79505e;
+    }
+
+    /* Outubro Rosa */
+    body[data-theme="rosa"] {
+      --fundo: #fff4f9;
+      --texto: #472b3d;
+      --principal: #b83f79;
+      --navegacao: #812653;
+      --botao: #c64f8b;
+      --destaque: #a52f6b;
+      --borda: #f1cadd;
+      --rodape: #79546a;
+    }
+
+    /* Dia das Crianças */
+    body[data-theme="criancas"] {
+      --fundo: #fff9e9;
+      --texto: #34304a;
+      --principal: #6750a4;
+      --navegacao: #315b8a;
+      --botao: #c45a36;
+      --destaque: #59428e;
+      --borda: #f0d9a0;
+      --rodape: #62556e;
+    }
+
+    @media (max-width: 480px) {
+      nav a {
+        margin: 2px 5px;
+      }
+
+      main {
+        margin-top: 22px;
+        padding: 0 14px;
+      }
+
+      .welcome, .recommendations {
+        padding: 22px 17px;
+      }
     }
   </style>
 </head>
-<body>
+
+<body data-theme="normal">
   <header>
     <h1>📚 Ledores e Escrevedores</h1>
     <p>Algo Mais — histórias que aproximam pessoas</p>
@@ -114,6 +229,32 @@
         e dar vida a novas histórias.
       </p>
       <a class="button" href="#livros">Conhecer o projeto</a>
+    </section>
+
+    <section class="theme-banner" aria-live="polite">
+      <h2 id="theme-title">💜 Bem-vindo ao nosso mundo literário!</h2>
+      <p id="theme-description">
+        Sempre há uma nova história esperando por você.
+      </p>
+      <p id="theme-dates"></p>
+    </section>
+
+    <section class="recommendations" id="recomendacoes">
+      <h2 id="recommendation-title">📚 Leituras especiais do momento</h2>
+      <p id="recommendation-intro">
+        Descubra ideias de leitura para sua próxima aventura literária.
+      </p>
+      <ul class="reading-list" id="recommendation-list">
+        <li>Contos para ler em momentos tranquilos.</li>
+        <li>Romances, aventuras e histórias de imaginação.</li>
+        <li>Novos autores e capítulos para descobrir.</li>
+      </ul>
+      <p>
+        <small>
+          As sugestões são temáticas. Os livros disponíveis na plataforma
+          poderão ser destacados aqui quando o catálogo estiver integrado.
+        </small>
+      </p>
     </section>
 
     <section class="sections">
@@ -138,5 +279,117 @@
     <p>© Ledores e Escrevedores — Algo Mais</p>
     <p>Um projeto para quem ama ler e escrever. 💜</p>
   </footer>
+
+  <script>
+    function atualizarTema() {
+      // Usa a data local do dispositivo do visitante.
+      const agora = new Date();
+      const mes = agora.getMonth() + 1;
+      const dia = agora.getDate();
+
+      const temas = {
+        normal: {
+          classe: "normal",
+          titulo: "💜 Bem-vindo ao nosso mundo literário!",
+          descricao: "Sempre há uma nova história esperando por você.",
+          datas: "",
+          recomendacao: "📚 Leituras para descobrir",
+          introducao: "Explore diferentes estilos e encontre histórias que combinem com você.",
+          itens: [
+            "Contos para ler em momentos tranquilos.",
+            "Romances, aventuras e histórias de imaginação.",
+            "Novos autores e capítulos para descobrir."
+          ]
+        },
+
+        junina: {
+          classe: "junina",
+          titulo: "🎉 Arraiá literário!",
+          descricao: "Bandeirinhas, tradições e histórias para aquecer o coração.",
+          datas: "Tema especial de Festa Junina",
+          recomendacao: "🌽 Histórias para ler no arraiá",
+          introducao: "Entre no clima junino com sugestões de leitura.",
+          itens: [
+            "Contos populares e lendas brasileiras.",
+            "Histórias ambientadas no interior e em pequenas cidades.",
+            "Romances e aventuras que celebram as tradições."
+          ]
+        },
+
+        namorados: {
+          classe: "namorados",
+          titulo: "💕 Especial Dia dos Namorados",
+          descricao: "Uma semana dedicada ao amor e às histórias que aproximam corações.",
+          datas: "De 9 a 14 de junho",
+          recomendacao: "❤️ Leituras para aquecer o coração",
+          introducao: "Que tal escolher uma história de amor para esta semana?",
+          itens: [
+            "Romances com encontros inesperados.",
+            "Histórias de amor, reencontros e segundas chances.",
+            "Contos românticos para ler e compartilhar."
+          ]
+        },
+
+        rosa: {
+          classe: "rosa",
+          titulo: "🎀 Outubro Rosa",
+          descricao: "Um espaço para histórias de coragem, acolhimento e esperança.",
+          datas: "Campanha especial de outubro",
+          recomendacao: "🌷 Histórias de força e esperança",
+          introducao: "Conheça temas literários ligados à empatia, autoestima e superação.",
+          itens: [
+            "Narrativas sobre coragem e recomeços.",
+            "Histórias de amizade, apoio e acolhimento.",
+            "Livros sobre personagens que enfrentam desafios."
+          ]
+        },
+
+        criancas: {
+          classe: "criancas",
+          titulo: "🧸 Viva a Semana das Crianças!",
+          descricao: "Imaginação, descobertas e aventuras para leitores de todas as idades.",
+          datas: "De 10 a 14 de outubro",
+          recomendacao: "🌈 Um mundo de aventuras",
+          introducao: "Celebre a leitura com histórias escolhidas de acordo com a idade.",
+          itens: [
+            "Contos de fadas e histórias encantadas.",
+            "Aventuras, mistérios leves e mundos fantásticos.",
+            "Histórias para incentivar a criatividade e a escrita."
+          ]
+        }
+      };
+
+      let tema = temas.normal;
+
+      if (mes === 6) {
+        tema = (dia >= 9 && dia <= 14)
+          ? temas.namorados
+          : temas.junina;
+      } else if (mes === 10) {
+        tema = (dia >= 10 && dia <= 14)
+          ? temas.criancas
+          : temas.rosa;
+      }
+
+      document.body.dataset.theme = tema.classe;
+
+      document.getElementById("theme-title").textContent = tema.titulo;
+      document.getElementById("theme-description").textContent = tema.descricao;
+      document.getElementById("theme-dates").textContent = tema.datas;
+      document.getElementById("recommendation-title").textContent = tema.recomendacao;
+      document.getElementById("recommendation-intro").textContent = tema.introducao;
+
+      const lista = document.getElementById("recommendation-list");
+      lista.replaceChildren();
+
+      tema.itens.forEach(function(item) {
+        const li = document.createElement("li");
+        li.textContent = item;
+        lista.appendChild(li);
+      });
+    }
+
+    atualizarTema();
+  </script>
 </body>
 </html>
