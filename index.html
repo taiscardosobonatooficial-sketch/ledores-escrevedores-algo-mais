@@ -1,0 +1,142 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Um espaço para ler, escrever e compartilhar histórias.">
+  <title>Ledores e Escrevedores — Algo Mais</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Georgia, serif;
+      background: #fbf7ff;
+      color: #30233b;
+    }
+
+    header {
+      background: #593778;
+      color: white;
+      padding: 24px 18px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0 0 10px;
+      font-size: clamp(25px, 5vw, 38px);
+    }
+
+    header p { margin: 0; }
+
+    nav {
+      background: #43265c;
+      padding: 13px;
+      text-align: center;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin: 0 12px;
+      display: inline-block;
+      padding: 5px;
+    }
+
+    main {
+      max-width: 900px;
+      margin: 35px auto;
+      padding: 0 20px;
+    }
+
+    .welcome {
+      background: white;
+      border-radius: 16px;
+      padding: 30px 24px;
+      text-align: center;
+      box-shadow: 0 4px 18px #38204b12;
+    }
+
+    .welcome h2 { color: #593778; }
+
+    .button {
+      display: inline-block;
+      background: #70479a;
+      color: white;
+      padding: 12px 22px;
+      border-radius: 9px;
+      text-decoration: none;
+      margin-top: 12px;
+    }
+
+    .sections {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+      margin-top: 24px;
+    }
+
+    .card {
+      background: white;
+      padding: 22px;
+      border-radius: 12px;
+      border: 1px solid #eadff4;
+    }
+
+    .card h3 { color: #593778; }
+
+    footer {
+      text-align: center;
+      padding: 25px;
+      color: #685875;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>📚 Ledores e Escrevedores</h1>
+    <p>Algo Mais — histórias que aproximam pessoas</p>
+  </header>
+
+  <nav>
+    <a href="#inicio">Início</a>
+    <a href="#livros">Livros</a>
+    <a href="#escritores">Escritores</a>
+    <a href="#comunidade">Comunidade</a>
+  </nav>
+
+  <main id="inicio">
+    <section class="welcome">
+      <h2>Um mundo de histórias espera por você!</h2>
+      <p>
+        Um espaço para descobrir livros, compartilhar ideias
+        e dar vida a novas histórias.
+      </p>
+      <a class="button" href="#livros">Conhecer o projeto</a>
+    </section>
+
+    <section class="sections">
+      <article class="card" id="livros">
+        <h3>📖 Livros e capítulos</h3>
+        <p>Descubra histórias e acompanhe os capítulos publicados.</p>
+      </article>
+
+      <article class="card" id="escritores">
+        <h3>✍️ Autores e colaboradores</h3>
+        <p>Um espaço para criar, escrever e colaborar com outros autores.</p>
+      </article>
+
+      <article class="card" id="comunidade">
+        <h3>💬 Nossa comunidade</h3>
+        <p>Mais adiante, leitores e escritores poderão trocar ideias e conversar.</p>
+      </article>
+    </section>
+  </main>
+
+  <footer>
+    <p>© Ledores e Escrevedores — Algo Mais</p>
+    <p>Um projeto para quem ama ler e escrever. 💜</p>
+  </footer>
+</body>
+</html>
