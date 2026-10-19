@@ -489,6 +489,43 @@
   </form>
 </section>
 
+<!-- Script de Conexão com o Supabase -->
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+
+  const SUPABASE_URL = 'https://ebpllllnyhztrfgjvomj.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_0lE6kSdTgq7Jp5lCKqVY9g_46sno8zi';
+
+  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  const formCadastro = document.getElementById('form-cadastro');
+  const mensagemCadastro = document.getElementById('mensagem-cadastro');
+
+  formCadastro.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const nome = document.getElementById('nome-cadastro').value;
+    const email = document.getElementById('email-cadastro').value;
+    const senha = document.getElementById('senha-cadastro').value;
+
+    mensagemCadastro.textContent = "Salvando cadastro...";
+
+    // Substitua 'usuarios' pelo nome exato da tabela que você criou no Supabase
+    const { data, error } = await supabase
+      .from('usuarios')
+      .insert([{ nome: nome, email: email, senha: senha }]);
+
+    if (error) {
+      mensagemCadastro.textContent = "Erro ao cadastrar: " + error.message;
+      mensagemCadastro.style.color = "red";
+    } else {
+      mensagemCadastro.textContent = "Cadastro realizado com sucesso! Bem-vindo(a)!";
+      mensagemCadastro.style.color = "green";
+      formCadastro.reset();
+    }
+  });
+</script>
+
 </body>
 </html>
 
