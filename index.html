@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -258,31 +257,29 @@
     </section>
 
     <section class="sections">
+      <article class="card" id="livros">
+        <h3>📖 Livros e capítulos</h3>
 
-<article class="card" id="livros">
-  <h3>📖 Livros e capítulos</h3>
+        <div class="livro-destaque">
+          <a href="carmelina.html" aria-label="Abrir Diário da Vovó Carmelina">
+            <img
+              src="8a81bf93-9c3a-40e4-9ce3-2d6f10935056.png"
+              alt="Capa do diário da Vovó Carmelina"
+              style="width: 100%; max-width: 240px; height: auto; display: block; margin: 16px auto; border-radius: 8px;"
+            >
+          </a>
 
-  <div class="livro-destaque">
-    <a href="carmelina.html" aria-label="Abrir Diário da Vovó Carmelina">
-      <img
-        src="8a81bf93-9c3a-40e4-9ce3-2d6f10935056.png"
-        alt="Capa do diário da Vovó Carmelina"
-        style="width: 100%; max-width: 240px; height: auto; display: block; margin: 16px auto; border-radius: 8px;"
-      >
-    </a>
+          <h4>
+            <a href="carmelina.html">
+              Diário da Vovó Carmelina
+            </a>
+          </h4>
 
-    <h4>
-      <a href="carmelina.html">
-        Diário da Vovó Carmelina
-      </a>
-    </h4>
+          <p>Conheça o diário e acompanhe suas páginas e histórias.</p>
+        </div>
 
-    <p>Conheça o diário e acompanhe suas páginas e histórias.</p>
-  </div>
-
-  <p>Descubra histórias e acompanhe os capítulos publicados.</p>
-</article>
-
+        <p>Descubra histórias e acompanhe os capítulos publicados.</p>
+      </article>
 
       <article class="card" id="escritores">
         <h3>✍️ Autores e colaboradores</h3>
@@ -296,14 +293,82 @@
     </section>
   </main>
 
+  <!-- Semana especial da Reforma Protestante -->
+  <section id="semana-reforma" style="display:none; background:#fff0f6; color:#63345f; padding:28px 20px; margin:25px auto; max-width:900px; border-radius:16px; text-align:center; box-shadow:0 4px 14px rgba(120,60,110,0.12);">
+    <h2 style="color:#9b4b91;">🌷 Semana da Reforma Protestante</h2>
+    <p><strong>De 27 a 31 de outubro</strong></p>
+
+    <img
+      src="semana-reforma-protestante.png"
+      alt="Ilustração dos quatro reformadores protestantes"
+      style="display:block; width:100%; max-width:760px; height:auto; margin:20px auto; border-radius:16px;"
+    >
+
+    <p>Durante estes dias, nosso site continua cor-de-rosa, celebrando os livros, a imaginação e o conhecimento, mas dedica um espaço especial à Reforma Protestante.</p>
+
+    <p>Em 31 de outubro de 1517, Martinho Lutero tornou públicas suas 95 teses, um marco do movimento que transformou a história do cristianismo. Outros reformadores, como João Calvino, Ulrico Zuínglio e John Knox, também contribuíram para esse movimento.</p>
+
+    <h3 style="color:#9b4b91;">Por que destacar a Reforma em vez do Halloween?</h3>
+
+    <p>Respeitamos as pessoas que celebram o Halloween, mas escolhemos dar destaque à Reforma Protestante porque ela tem um significado especial para nossa proposta cristã: valorizar a Bíblia, a fé, a graça de Deus e a importância de conhecer a história da Igreja.</p>
+
+    <p>Queremos aproveitar esses dias para aprender, refletir e compartilhar conhecimento.</p>
+
+    <p><strong>Que a leitura nos ajude a crescer em sabedoria, fé e amor ao próximo! 💗</strong></p>
+  </section>
+
+  <!-- Cadastro de leitores e escritores -->
+  <main>
+    <section id="cadastro" class="card" style="margin-top: 24px;">
+      <h2>📚 Faça parte do Ledores e Escrevedores</h2>
+      <p>Crie sua conta para participar da nossa comunidade literária.</p>
+
+      <form id="form-cadastro">
+        <label for="nome-cadastro">Nome</label><br>
+        <input
+          id="nome-cadastro"
+          name="nome"
+          type="text"
+          autocomplete="name"
+          required
+          style="width: 100%; padding: 8px; margin: 8px 0 16px; border: 1px solid var(--borda); border-radius: 6px;"
+        ><br>
+
+        <label for="email-cadastro">E-mail</label><br>
+        <input
+          id="email-cadastro"
+          name="email"
+          type="email"
+          autocomplete="email"
+          required
+          style="width: 100%; padding: 8px; margin: 8px 0 16px; border: 1px solid var(--borda); border-radius: 6px;"
+        ><br>
+
+        <label for="senha-cadastro">Senha (mínimo de 8 caracteres)</label><br>
+        <input
+          id="senha-cadastro"
+          name="senha"
+          type="password"
+          minlength="8"
+          autocomplete="new-password"
+          required
+          style="width: 100%; padding: 8px; margin: 8px 0 16px; border: 1px solid var(--borda); border-radius: 6px;"
+        ><br>
+
+        <button type="submit" class="button">Preparar meu cadastro</button>
+        <p id="mensagem-cadastro" role="status" aria-live="polite" style="margin-top: 12px; font-weight: bold;"></p>
+      </form>
+    </section>
+  </main>
+
   <footer>
     <p>© Ledores e Escrevedores — Algo Mais</p>
     <p>Um projeto para quem ama ler e escrever. 💜</p>
   </footer>
 
+  <!-- Scripts do Site (Tema, Reforma e Supabase) -->
   <script>
     function atualizarTema() {
-      // Usa a data local do dispositivo do visitante.
       const agora = new Date();
       const mes = agora.getMonth() + 1;
       const dia = agora.getDate();
@@ -322,7 +387,6 @@
             "Novos autores e capítulos para descobrir."
           ]
         },
-
         junina: {
           classe: "junina",
           titulo: "🎉 Arraiá literário!",
@@ -336,7 +400,6 @@
             "Romances e aventuras que celebram as tradições."
           ]
         },
-
         namorados: {
           classe: "namorados",
           titulo: "💕 Especial Dia dos Namorados",
@@ -350,7 +413,6 @@
             "Contos românticos para ler e compartilhar."
           ]
         },
-
         rosa: {
           classe: "rosa",
           titulo: "🎀 Outubro Rosa",
@@ -364,7 +426,6 @@
             "Livros sobre personagens que enfrentam desafios."
           ]
         },
-
         criancas: {
           classe: "criancas",
           titulo: "🧸 Viva a Semana das Crianças!",
@@ -383,13 +444,9 @@
       let tema = temas.normal;
 
       if (mes === 6) {
-        tema = (dia >= 9 && dia <= 14)
-          ? temas.namorados
-          : temas.junina;
+        tema = (dia >= 9 && dia <= 14) ? temas.namorados : temas.junina;
       } else if (mes === 10) {
-        tema = (dia >= 10 && dia <= 14)
-          ? temas.criancas
-          : temas.rosa;
+        tema = (dia >= 10 && dia <= 14) ? temas.criancas : temas.rosa;
       }
 
       document.body.dataset.theme = tema.classe;
@@ -411,121 +468,55 @@
     }
 
     atualizarTema();
+
+    // Verificação da Semana da Reforma Protestante
+    const agoraRef = new Date();
+    const inicioRef = new Date(agoraRef.getFullYear(), 9, 27);
+    const fimRef = new Date(agoraRef.getFullYear(), 9, 31, 23, 59, 59);
+    const secaoReforma = document.getElementById("semana-reforma");
+
+    if (secaoReforma && agoraRef >= inicioRef && agoraRef <= fimRef) {
+      secaoReforma.style.display = "block";
+    }
   </script>
 
-<!-- Semana especial da Reforma Protestante -->
-<section id="semana-reforma" style="display:none; background:#fff0f6; color:#63345f; padding:28px 20px; margin:25px auto; max-width:1000px; border-radius:20px; text-align:center; box-shadow:0 4px 14px rgba(120,60,110,0.12);">
-  <h2 style="color:#9b4b91;">🌷 Semana da Reforma Protestante</h2>
-  <p><strong>De 27 a 31 de outubro</strong></p>
+  <!-- Script de Conexão com o Supabase -->
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
-  <img
-    src="semana-reforma-protestante.png"
-    alt="Ilustração dos quatro reformadores protestantes"
-    style="display:block; width:100%; max-width:760px; height:auto; margin:20px auto; border-radius:16px;"
-  >
+    const SUPABASE_URL = 'https://ebpllllnyhztrfgjvomj.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_0lE6kSdTgq7Jp5lCKqVY9g_46sno8zi';
 
-  <p>Durante estes dias, nosso site continua cor-de-rosa, celebrando os livros, a imaginação e o conhecimento, mas dedica um espaço especial à Reforma Protestante.</p>
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  <p>Em 31 de outubro de 1517, Martinho Lutero tornou públicas suas 95 teses, um marco do movimento que transformou a história do cristianismo. Outros reformadores, como João Calvino, Ulrico Zuínglio e John Knox, também contribuíram para esse movimento.</p>
+    const formCadastro = document.getElementById('form-cadastro');
+    const mensagemCadastro = document.getElementById('mensagem-cadastro');
 
-  <h3 style="color:#9b4b91;">Por que destacar a Reforma em vez do Halloween?</h3>
+    if (formCadastro) {
+      formCadastro.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const nome = document.getElementById('nome-cadastro').value;
+        const email = document.getElementById('email-cadastro').value;
+        const senha = document.getElementById('senha-cadastro').value;
 
-  <p>Respeitamos as pessoas que celebram o Halloween, mas escolhemos dar destaque à Reforma Protestante porque ela tem um significado especial para nossa proposta cristã: valorizar a Bíblia, a fé, a graça de Deus e a importância de conhecer a história da Igreja.</p>
+        mensagemCadastro.textContent = "Salvando cadastro...";
+        mensagemCadastro.style.color = "#593778";
 
-  <p>Queremos aproveitar esses dias para aprender, refletir e compartilhar conhecimento.</p>
+        const { data, error } = await supabase
+          .from('usuarios')
+          .insert([{ nome: nome, email: email, senha: senha }]);
 
-  <p><strong>Que a leitura nos ajude a crescer em sabedoria, fé e amor ao próximo! 💗</strong></p>
-</section>
-
-<script>
-(function () {
-  const inicio = new Date(agora.getFullYear(), 9, 27);
-  const agora = new Date();
-  const fim = new Date(agora.getFullYear(), 9, 31, 23, 59, 59);
-  const secao = document.getElementById("semana-reforma");
-
-  if (secao && agora >= inicio && agora <= fim) {
-    secao.style.display = "block";
-  }
-})();
-</script>
-
-<!-- Cadastro de leitores e escritores -->
-<section id="cadastro" class="card">
-  <h2>📚 Faça parte do Ledores e Escrevedores</h2>
-  <p>Crie sua conta para participar da nossa comunidade literária.</p>
-
-  <form id="form-cadastro">
-    <label for="nome-cadastro">Nome</label>
-    <input
-      id="nome-cadastro"
-      name="nome"
-      type="text"
-      autocomplete="name"
-      required
-    >
-
-    <label for="email-cadastro">E-mail</label>
-    <input
-      id="email-cadastro"
-      name="email"
-      type="email"
-      autocomplete="email"
-      required
-    >
-
-    <label for="senha-cadastro">Senha (mínimo de 8 caracteres)</label>
-    <input
-      id="senha-cadastro"
-      name="senha"
-      type="password"
-      minlength="8"
-      autocomplete="new-password"
-      required
-    >
-
-    <button type="submit">Preparar meu cadastro</button>
-    <p id="mensagem-cadastro" role="status" aria-live="polite"></p>
-  </form>
-</section>
-
-<!-- Script de Conexão com o Supabase -->
-<script type="module">
-  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
-
-  const SUPABASE_URL = 'https://ebpllllnyhztrfgjvomj.supabase.co';
-  const SUPABASE_ANON_KEY = 'sb_publishable_0lE6kSdTgq7Jp5lCKqVY9g_46sno8zi';
-
-  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-  const formCadastro = document.getElementById('form-cadastro');
-  const mensagemCadastro = document.getElementById('mensagem-cadastro');
-
-  formCadastro.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    const nome = document.getElementById('nome-cadastro').value;
-    const email = document.getElementById('email-cadastro').value;
-    const senha = document.getElementById('senha-cadastro').value;
-
-    mensagemCadastro.textContent = "Salvando cadastro...";
-
-    // Substitua 'usuarios' pelo nome exato da tabela que você criou no Supabase
-    const { data, error } = await supabase
-      .from('usuarios')
-      .insert([{ nome: nome, email: email, senha: senha }]);
-
-    if (error) {
-      mensagemCadastro.textContent = "Erro ao cadastrar: " + error.message;
-      mensagemCadastro.style.color = "red";
-    } else {
-      mensagemCadastro.textContent = "Cadastro realizado com sucesso! Bem-vindo(a)!";
-      mensagemCadastro.style.color = "green";
-      formCadastro.reset();
+        if (error) {
+          mensagemCadastro.textContent = "Erro ao cadastrar: " + error.message;
+          mensagemCadastro.style.color = "red";
+        } else {
+          mensagemCadastro.textContent = "Cadastro realizado com sucesso! Bem-vindo(a)!";
+          mensagemCadastro.style.color = "green";
+          formCadastro.reset();
+        }
+      });
     }
-  });
-</script>
-
+  </script>
 </body>
 </html>
-
