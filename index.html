@@ -3,19 +3,18 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ledores e Escrevedores — Algo Mais (Outubro Rosa)</title>
+  <title>Ledores e Escrevedores — Algo Mais</title>
   
   <!-- Supabase JS -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   
   <style>
     :root {
-      --primary-color: #d946ef; /* Tom Outubro Rosa / Magenta elegante */
-      --secondary-color: #ec4899;
-      --bg-color: #fdf2f8;
+      --primary-color: #5c3d75;
+      --secondary-color: #8b5cf6;
+      --bg-color: #f8f5fa;
       --card-bg: #ffffff;
       --text-color: #2d2b32;
-      --accent-color: #f43f5e;
     }
 
     body {
@@ -27,26 +26,33 @@
       line-height: 1.6;
     }
 
-    header {
-      background: linear-gradient(135deg, #be185d, var(--primary-color), var(--secondary-color));
-      color: white;
-      padding: 2.5rem 1rem;
+    /* BANNER DINÂMICO SAZONAL */
+    .banner-sazonal {
       text-align: center;
-      box-shadow: 0 4px 15px rgba(219, 70, 239, 0.2);
+      padding: 12px 15px;
+      font-weight: bold;
+      font-size: 1rem;
+      transition: all 0.5s ease;
+    }
+
+    /* Estilos dos Temas */
+    .tema-rosa { background-color: #fbcfe8; color: #831843; border-bottom: 2px solid #f472b6; }
+    .tema-reforma { background-color: #fef3c7; color: #78350f; border-bottom: 2px solid #f59e0b; }
+    .tema-azul { background-color: #dbeafe; color: #1e40af; border-bottom: 2px solid #60a5fa; }
+    .tema-natal { background-color: #fee2e2; color: #991b1b; border-bottom: 2px solid #ef4444; }
+    .tema-reveillon { background-color: #fae8ff; color: #701a75; border-bottom: 2px solid #c084fc; }
+    .tema-padrao { background-color: #e9d5ff; color: #581c87; border-bottom: 2px solid #a855f7; }
+
+    header {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+      padding: 2.2rem 1rem;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     }
 
     header h1 { margin: 0; font-size: 2.3rem; }
     header p { margin-top: 0.5rem; opacity: 0.95; font-size: 1.1rem; }
-
-    .banner-rosa {
-      background-color: #fbcfe8;
-      color: #831843;
-      text-align: center;
-      padding: 10px;
-      font-weight: bold;
-      font-size: 0.95rem;
-      border-bottom: 1px solid #f472b6;
-    }
 
     nav {
       background: white;
@@ -134,7 +140,7 @@
     }
 
     .btn:hover {
-      background: #be185d;
+      background: var(--secondary-color);
     }
 
     .btn-whatsapp {
@@ -162,7 +168,7 @@
       box-shadow: 0 3px 10px rgba(0,0,0,0.1);
       display: flex;
       flex-direction: column;
-      border: 1px solid #fce7f3;
+      border: 1px solid #f1f5f9;
     }
 
     .book-cover {
@@ -183,7 +189,7 @@
       font-size: 1.1rem;
       font-weight: bold;
       margin: 0 0 5px 0;
-      color: #9d174d;
+      color: var(--primary-color);
     }
 
     .book-author {
@@ -198,8 +204,8 @@
       border-radius: 12px;
       font-size: 0.75rem;
       font-weight: bold;
-      background: #fce7f3;
-      color: #be185d;
+      background: #e9d5ff;
+      color: #581c87;
       margin-right: 5px;
       margin-bottom: 5px;
     }
@@ -210,8 +216,9 @@
 </head>
 <body>
 
-  <div class="banner-rosa">
-    🎀 Outubro Rosa — Celebrando a vida, a saúde e a literatura em família!
+  <!-- BANNER AUTOMÁTICO DE ACORDO COM A DATA DO ANO -->
+  <div id="banner-sazonal" class="banner-sazonal tema-padrao">
+    📚 Bem-vindo à nossa Comunidade Literária Familiar!
   </div>
 
   <header>
@@ -276,7 +283,7 @@
 
           <div class="form-group">
             <label for="genero-livro">Gênero / Estilo</label>
-            <input type="text" id="genero-livro" placeholder="Ex: Memórias, Conto, Fofoca, História de Pescador..." required />
+            <input type="text" id="genero-livro" placeholder="Ex: Memórias, Conto, Fofoca, História de Pescador, Piada..." required />
           </div>
 
           <div class="form-group">
@@ -350,6 +357,36 @@
     const SUPABASE_URL = "https://ebpllllnyhztrfgjvomj.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVicGxsbGxueWh6dHJmZ2p2b21qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAzMDgxNDQsImV4cCI6MjA3NTg4NDE0NH0.R8917Peb5L7Hly43P9q6zL8Jk8_x1x1Q1X1X1X1X1X1"; 
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // SISTEMA AUTOMÁTICO DE BANNERS SAZONAIS
+    function atualizarBannerSazonal() {
+      const hoje = new Date();
+      const mes = hoje.getMonth() + 1; // Janeiro = 1, Outubro = 10...
+      const dia = hoje.getDate();
+      const banner = document.getElementById('banner-sazonal');
+
+      if (mes === 10) {
+        if (dia <= 24) {
+          banner.className = "banner-sazonal tema-rosa";
+          banner.innerHTML = "🎀 Outubro Rosa — Conscientização, saúde e celebração da vida!";
+        } else {
+          banner.className = "banner-sazonal tema-reforma";
+          banner.innerHTML = "📜 Especial Semana da Reforma Protestante (31 de Outubro) — Valorizando a leitura e a palavra!";
+        }
+      } else if (mes === 11) {
+        banner.className = "banner-sazonal tema-azul";
+        banner.innerHTML = "💙 Novembro Azul — Saúde do homem e conscientização em família!";
+      } else if (mes === 12 && dia <= 25) {
+        banner.className = "banner-sazonal tema-natal";
+        banner.innerHTML = "🎄 Especial de Natal — Celebrando a esperança, o amor e as boas histórias!";
+      } else if ((mes === 12 && dia > 25) || (mes === 1 && dia <= 5)) {
+        banner.className = "banner-sazonal tema-reveillon";
+        banner.innerHTML = "🎆 Feliz Ano Novo! Boas-vindas a 2027 com novos livros e muitas palavras!";
+      } else {
+        banner.className = "banner-sazonal tema-padrao";
+        banner.innerHTML = "📚 Bem-vindo à nossa Comunidade Literária Familiar!";
+      }
+    }
 
     function showTab(tabId) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
@@ -483,7 +520,7 @@
               <div>
                 <span class="badge">${item.categoria || 'Livro'}</span>
                 <span class="badge">${item.genero || 'Geral'}</span>
-                <span class="badge" style="background:#fbcfe8; color:#831843;">${item.tipo_obra || 'Obra Contínua'}</span>
+                <span class="badge">${item.tipo_obra || 'Obra Contínua'}</span>
               </div>
               <p style="font-size:0.85rem; color:#555; margin-top:8px;">${item.sinopse ? item.sinopse.substring(0, 90) + '...' : ''}</p>
             </div>
@@ -492,7 +529,11 @@
       });
     }
 
-    window.onload = carregarLivros;
+    // Inicialização ao carregar a página
+    window.onload = function() {
+      atualizarBannerSazonal();
+      carregarLivros();
+    };
   </script>
 </body>
 </html>
