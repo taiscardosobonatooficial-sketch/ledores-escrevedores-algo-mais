@@ -412,5 +412,43 @@
 
     atualizarTema();
   </script>
+
+<!-- Semana especial da Reforma Protestante -->
+<section id="semana-reforma" style="display:none; background:#fff0f6; color:#63345f; padding:28px 20px; margin:25px auto; max-width:1000px; border-radius:20px; text-align:center; box-shadow:0 4px 14px rgba(120,60,110,0.12);">
+  <h2 style="color:#9b4b91;">🌷 Semana da Reforma Protestante</h2>
+  <p><strong>De 27 a 31 de outubro</strong></p>
+
+  <img
+    src="semana-reforma-protestante.png"
+    alt="Ilustração dos quatro reformadores protestantes"
+    style="display:block; width:100%; max-width:760px; height:auto; margin:20px auto; border-radius:16px;"
+  >
+
+  <p>Durante estes dias, nosso site continua cor-de-rosa, celebrando os livros, a imaginação e o conhecimento, mas dedica um espaço especial à Reforma Protestante.</p>
+
+  <p>Em 31 de outubro de 1517, Martinho Lutero tornou públicas suas 95 teses, um marco do movimento que transformou a história do cristianismo. Outros reformadores, como João Calvino, Ulrico Zuínglio e John Knox, também contribuíram para esse movimento.</p>
+
+  <h3 style="color:#9b4b91;">Por que destacar a Reforma em vez do Halloween?</h3>
+
+  <p>Respeitamos as pessoas que celebram o Halloween, mas escolhemos dar destaque à Reforma Protestante porque ela tem um significado especial para nossa proposta cristã: valorizar a Bíblia, a fé, a graça de Deus e a importância de conhecer a história da Igreja.</p>
+
+  <p>Queremos aproveitar esses dias para aprender, refletir e compartilhar conhecimento.</p>
+
+  <p><strong>Que a leitura nos ajude a crescer em sabedoria, fé e amor ao próximo! 💗</strong></p>
+</section>
+
+<script>
+(function () {
+  const inicio = new Date(agora.getFullYear(), 9, 27);
+  const agora = new Date();
+  const fim = new Date(agora.getFullYear(), 9, 31, 23, 59, 59);
+  const secao = document.getElementById("semana-reforma");
+
+  if (secao && agora >= inicio && agora <= fim) {
+    secao.style.display = "block";
+  }
+})();
+</script>
+
 </body>
 </html>
