@@ -450,5 +450,45 @@
 })();
 </script>
 
+<!-- Cadastro de leitores e escritores -->
+<section id="cadastro" class="card">
+  <h2>📚 Faça parte do Ledores e Escrevedores</h2>
+  <p>Crie sua conta para participar da nossa comunidade literária.</p>
+
+  <form id="form-cadastro">
+    <label for="nome-cadastro">Nome</label>
+    <input
+      id="nome-cadastro"
+      name="nome"
+      type="text"
+      autocomplete="name"
+      required
+    >
+
+    <label for="email-cadastro">E-mail</label>
+    <input
+      id="email-cadastro"
+      name="email"
+      type="email"
+      autocomplete="email"
+      required
+    >
+
+    <label for="senha-cadastro">Senha (mínimo de 8 caracteres)</label>
+    <input
+      id="senha-cadastro"
+      name="senha"
+      type="password"
+      minlength="8"
+      autocomplete="new-password"
+      required
+    >
+
+    <button type="submit">Preparar meu cadastro</button>
+    <p id="mensagem-cadastro" role="status" aria-live="polite"></p>
+  </form>
+</section>
+
 </body>
 </html>
+
