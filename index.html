@@ -406,7 +406,7 @@
     <!-- Formulário de Publicação Direta pelo Site -->
     <section id="publicar" class="card" style="margin-top: 30px; padding: 24px;">
       <h2>✍️ Publicar Nova História / Capítulo</h2>
-      <p>Escreva diretamente no site sem precisar criar arquivos HTML!</p>
+      <p>Escolha a imagem da capa no seu computador e publique direto no site!</p>
 
       <form id="form-publicar">
         <label><strong>Título da Obra:</strong></label><br>
@@ -440,8 +440,8 @@
           </div>
         </div>
 
-        <label><strong>Link/URL da Capa (Imagem):</strong></label><br>
-        <input type="url" id="pub-capa" placeholder="https://exemplo.com/imagem.jpg" style="width: 100%; padding: 10px; margin: 8px 0 16px; border: 1px solid var(--borda); border-radius: 6px;"><br>
+        <label><strong>Arquivo da Capa (Imagem do Computador/Celular):</strong></label><br>
+        <input type="file" id="pub-capa-arquivo" accept="image/*" style="width: 100%; padding: 8px; margin: 8px 0 16px; border: 1px solid var(--borda); border-radius: 6px; background: #fff;"><br>
 
         <label><strong>Sinopse / Resumo:</strong></label><br>
         <textarea id="pub-sinopse" rows="3" style="width: 100%; padding: 10px; margin: 8px 0 16px; border: 1px solid var(--borda); border-radius: 6px;"></textarea><br>
@@ -526,7 +526,6 @@
       <p><strong>Pacote Avulso:</strong> R$ 5,00 (+25.000 Créditos)<br>
       <strong>Plano Ilimitado:</strong> R$ 20,00 (90 dias de leitura livre)</p>
       
-      <!-- Link atualizado com seu número oficial do WhatsApp -->
       <a href="https://wa.me/5541984251049?text=Olá!%20Gostaria%20de%20comprar%20créditos%20para%20o%20site%20Ledores%20e%20Escrevedores." target="_blank" class="btn-whats">
         📱 Comprar Créditos pelo WhatsApp
       </a>
@@ -560,7 +559,7 @@
       document.body.dataset.theme = tema.classe;
       document.getElementById("theme-title").textContent = tema.titulo;
       document.getElementById("theme-description").textContent = tema.descricao;
-      document.getElementById("theme-dates").textContent = tema.datas;
+      document.getElementById("theme-dates").textContent = tema.dates;
       document.getElementById("recommendation-title").textContent = tema.recomendacao;
       document.getElementById("recommendation-intro").textContent = tema.introducao;
 
@@ -584,7 +583,7 @@
     }
   </script>
 
-  <!-- Script Supabase, Autenticação e Publicação -->
+  <!-- Script Supabase, Autenticação e Upload Automático de Capa -->
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
@@ -680,18 +679,44 @@
       }
     });
 
-    // Publicar Obra no Supabase
+    // Publicar Obra no Supabase com Upload Automático de Imagem
     document.getElementById('form-publicar').addEventListener('submit', async (e) => {
       e.preventDefault();
       const msg = document.getElementById('msg-publicar');
-      msg.textContent = "Publicando sua história..."; msg.style.color = "#593778";
+      msg.textContent = "Enviando capa e publicando obra..."; msg.style.color = "#593778";
+
+      const arquivoInput = document.getElementById('pub-capa-arquivo');
+      let capaUrl = 'https://via.placeholder.com/200x280?text=Sem+Capa';
+
+      // Se o usuário selecionou uma imagem, fazemos o upload para o bucket 'capas'
+      if (arquivoInput.files && arquivoInput.files[0]) {
+        const arquivo = arquivoInput.files[0];
+        const nomeArquivo = `${Date.now()}_${arquivo.name}`;
+
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from('capas')
+          .upload(nomeArquivo, arquivo);
+
+        if (uploadError) {
+          msg.textContent = "Erro ao enviar imagem da capa: " + uploadError.message;
+          msg.style.color = "red";
+          return;
+        }
+
+        // Pega a URL pública da imagem enviada
+        const { data: publicUrlData } = supabase.storage
+          .from('capas')
+          .getPublicUrl(nomeArquivo);
+
+        capaUrl = publicUrlData.publicUrl;
+      }
 
       const payloadObra = {
         titulo: document.getElementById('pub-titulo').value.trim(),
         autor: document.getElementById('pub-autor').value.trim(),
         categoria: document.getElementById('pub-categoria').value,
         genero: document.getElementById('pub-genero').value,
-        capa_url: document.getElementById('pub-capa').value.trim() || 'https://via.placeholder.com/200x280?text=Sem+Capa',
+        capa_url: capaUrl,
         sinopse: document.getElementById('pub-sinopse').value.trim(),
         conteudo: document.getElementById('pub-conteudo').value.trim()
       };
