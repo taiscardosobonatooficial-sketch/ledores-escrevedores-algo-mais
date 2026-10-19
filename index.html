@@ -142,6 +142,57 @@
       color: var(--rodape);
     }
 
+    /* Estilos dos Botões de Autenticação */
+    .btn-aba {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid var(--borda);
+      background: #f0e8f5;
+      color: var(--texto);
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .btn-aba.ativa {
+      background: var(--principal);
+      color: white;
+    }
+
+    .btn-login {
+      display: inline-block;
+      background: #e8a5c8;
+      color: #472b3d;
+      padding: 12px 22px;
+      border: none;
+      border-radius: 9px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 16px;
+      width: 100%;
+    }
+
+    .btn-login:hover {
+      background: #df8fb8;
+    }
+
+    .btn-logoff {
+      display: inline-block;
+      background: #d81b60;
+      color: white;
+      padding: 12px 22px;
+      border: none;
+      border-radius: 9px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 15px;
+    }
+
+    .btn-logoff:hover {
+      background: #b0124a;
+    }
+
     /* Festa Junina */
     body[data-theme="junina"] {
       --fundo: #fff8e8;
@@ -317,19 +368,97 @@
     <p><strong>Que a leitura nos ajude a crescer em sabedoria, fé e amor ao próximo! 💗</strong></p>
   </section>
 
-  <!-- Cadastro de leitores e escritores -->
+  <!-- Área de Autenticação (Login, Cadastro Familiar e Logoff) -->
   <main>
-    <section id="cadastro" class="card" style="margin-top: 24px;">
-      <h2>📚 Faça parte do Ledores e Escrevedores</h2>
-      <p>Crie sua conta para participar da nossa comunidade literária.</p>
+    <!-- Card de Sessão Ativa (Quando Logado) -->
+    <section id="area-logado" class="card" style="display: none; margin-top: 24px; text-align: center; padding: 24px;">
+      <h2>🌸 Olá, <span id="nome-usuario-logado">Leitor</span>!</h2>
+      <p>Você está conectado à sua conta do <strong>Ledores e Escrevedores</strong>.</p>
+      <p><strong>Tipo de Conta:</strong> <span id="tipo-conta-logado">Titular</span></p>
+      <p><strong>Saldo de Leitura:</strong> 30.000 palavras disponíveis</p>
+      
+      <button id="btn-logoff" class="btn-logoff">Sair da Conta (Logoff)</button>
+    </section>
 
-      <form id="form-cadastro">
-        <label for="nome-cadastro">Nome</label><br>
+    <!-- Card de Acesso (Quando Deslogado) -->
+    <section id="area-deslogado" class="card" style="margin-top: 24px;">
+      <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+        <button id="aba-login" class="btn-aba ativa">Entrar (Login)</button>
+        <button id="aba-cadastro" class="btn-aba">Criar Conta (Cadastro)</button>
+      </div>
+
+      <!-- Formulário de LOGIN -->
+      <form id="form-login">
+        <h2>🔑 Acessar sua conta</h2>
+        <label for="email-login">E-mail</label><br>
+        <input
+          id="email-login"
+          name="email"
+          type="email"
+          autocomplete="email"
+          required
+          style="width: 100%; padding: 8px; margin: 8px 0 16px; border: 1px solid var(--borda); border-radius: 6px;"
+        ><br>
+
+        <label for="senha-login">Senha</label><br>
+        <input
+          id="senha-login"
+          name="senha"
+          type="password"
+          autocomplete="current-password"
+          required
+          style="width: 100%; padding: 8px; margin: 8px 0 16px; border: 1px solid var(--borda); border-radius: 6px;"
+        ><br>
+
+        <button type="submit" class="btn-login">Entrar no Site</button>
+        <p id="mensagem-login" role="status" aria-live="polite" style="margin-top: 12px; font-weight: bold;"></p>
+      </form>
+
+      <!-- Formulário de CADASTRO (Familiar) -->
+      <form id="form-cadastro" style="display: none;">
+        <h2>📚 Criar nova conta</h2>
+        <label for="tipo-conta">Tipo de Conta</label><br>
+        <select id="tipo-conta" name="tipo_conta" style="width: 100%; padding: 8px; margin: 8px 0 16px; border: 1px solid var(--borda); border-radius: 6px;">
+          <option value="titular">Conta Principal (Pai / Mãe / Titular)</option>
+          <option value="dependente">Subconta Familiar (Filho / Dependente)</option>
+        </select><br>
+
+        <label for="nome-cadastro">Nome Completo</label><br>
         <input
           id="nome-cadastro"
           name="nome"
           type="text"
           autocomplete="name"
+          required
+          style="width: 100%; padding: 8px; margin: 8px 0 16px; border: 1px solid var(--borda); border-radius: 6px;"
+        ><br>
+
+        <label for="cpf-cadastro">CPF do Titular/Membro</label><br>
+        <input
+          id="cpf-cadastro"
+          name="cpf"
+          type="text"
+          placeholder="000.000.000-00"
+          required
+          style="width: 100%; padding: 8px; margin: 8px 0 16px; border: 1px solid var(--borda); border-radius: 6px;"
+        ><br>
+
+        <div id="campo-responsavel" style="display: none;">
+          <label for="cpf-responsavel">CPF do Responsável (Pai/Mãe Titular)</label><br>
+          <input
+            id="cpf-responsavel"
+            name="cpf_responsavel"
+            type="text"
+            placeholder="CPF do titular da conta familiar"
+            style="width: 100%; padding: 8px; margin: 8px 0 16px; border: 1px solid var(--borda); border-radius: 6px;"
+          ><br>
+        </div>
+
+        <label for="nascimento-cadastro">Data de Nascimento</label><br>
+        <input
+          id="nascimento-cadastro"
+          name="data_nascimento"
+          type="date"
           required
           style="width: 100%; padding: 8px; margin: 8px 0 16px; border: 1px solid var(--borda); border-radius: 6px;"
         ><br>
@@ -355,7 +484,7 @@
           style="width: 100%; padding: 8px; margin: 8px 0 16px; border: 1px solid var(--borda); border-radius: 6px;"
         ><br>
 
-        <button type="submit" class="button">Preparar meu cadastro</button>
+        <button type="submit" class="btn-login">Finalizar Cadastro</button>
         <p id="mensagem-cadastro" role="status" aria-live="polite" style="margin-top: 12px; font-weight: bold;"></p>
       </form>
     </section>
@@ -480,7 +609,7 @@
     }
   </script>
 
-  <!-- Script de Conexão com o Supabase -->
+  <!-- Script de Conexão com o Supabase e Autenticação -->
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
@@ -489,63 +618,142 @@
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-   
-const formCadastro = document.getElementById('form-cadastro');
-const mensagemCadastro = document.getElementById('mensagem-cadastro');
+    // Elementos da Tela
+    const abaLogin = document.getElementById('aba-login');
+    const abaCadastro = document.getElementById('aba-cadastro');
+    const formLogin = document.getElementById('form-login');
+    const formCadastro = document.getElementById('form-cadastro');
+    const areaLogado = document.getElementById('area-logado');
+    const areaDeslogado = document.getElementById('area-deslogado');
+    const selectTipoConta = document.getElementById('tipo-conta');
+    const campoResponsavel = document.getElementById('campo-responsavel');
+    const btnLogoff = document.getElementById('btn-logoff');
 
-if (formCadastro) {
-  formCadastro.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const nome = document.getElementById('nome-cadastro').value.trim();
-    const email = document.getElementById('email-cadastro').value.trim();
-    const senha = document.getElementById('senha-cadastro').value;
-
-    mensagemCadastro.textContent = 'Criando sua conta...';
-    mensagemCadastro.style.color = '#593778';
-
-    try {
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password: senha,
-        options: {
-          data: { nome }
-        }
+    // Alternar entre Abas de Login e Cadastro
+    if (abaLogin && abaCadastro) {
+      abaLogin.addEventListener('click', () => {
+        abaLogin.classList.add('ativa');
+        abaCadastro.classList.remove('ativa');
+        formLogin.style.display = 'block';
+        formCadastro.style.display = 'none';
       });
 
-      if (error) throw error;
-
-      if (data.session && data.user) {
-        const { error: perfilError } = await supabase
-          .from('usuarios')
-          .upsert({
-            id: data.user.id,
-            nome,
-            email
-          });
-
-        if (perfilError) {
-          throw new Error(
-            'A conta foi criada, mas não foi possível salvar o perfil. ' +
-            perfilError.message
-          );
-        }
-      }
-
-      mensagemCadastro.textContent = data.session
-        ? 'Cadastro realizado com sucesso! Bem-vindo(a)!'
-        : 'Conta criada! Confira seu e-mail para confirmar o cadastro.';
-
-      mensagemCadastro.style.color = 'green';
-      formCadastro.reset();
-
-    } catch (error) {
-      mensagemCadastro.textContent = 'Erro ao cadastrar: ' + error.message;
-      mensagemCadastro.style.color = 'red';
+      abaCadastro.addEventListener('click', () => {
+        abaCadastro.classList.add('ativa');
+        abaLogin.classList.remove('ativa');
+        formCadastro.style.display = 'block';
+        formLogin.style.display = 'none';
+      });
     }
-  });
-}
 
+    if (selectTipoConta) {
+      selectTipoConta.addEventListener('change', (e) => {
+        campoResponsavel.style.display = (e.target.value === 'dependente') ? 'block' : 'none';
+      });
+    }
+
+    // Verificar se o usuário já está logado na memória do navegador
+    const usuarioSalvo = JSON.parse(localStorage.getItem('usuario_logado'));
+    if (usuarioSalvo) {
+      mostrarAreaLogado(usuarioSalvo);
+    }
+
+    // Ação de LOGIN
+    if (formLogin) {
+      formLogin.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('email-login').value.trim();
+        const senha = document.getElementById('senha-login').value;
+        const mensagem = document.getElementById('mensagem-login');
+
+        mensagem.textContent = "Verificando dados...";
+        mensagem.style.color = "#593778";
+
+        const { data, error } = await supabase
+          .from('usuarios')
+          .select('*')
+          .eq('email', email)
+          .eq('senha', senha)
+          .single();
+
+        if (error || !data) {
+          mensagem.textContent = "E-mail ou senha incorretos. Tente novamente!";
+          mensagem.style.color = "red";
+        } else {
+          mensagem.textContent = "Login realizado com sucesso!";
+          mensagem.style.color = "green";
+          
+          localStorage.setItem('usuario_logado', JSON.stringify(data));
+          setTimeout(() => mostrarAreaLogado(data), 1000);
+        }
+      });
+    }
+
+    // Ação de LOGOFF (Sair)
+    if (btnLogoff) {
+      btnLogoff.addEventListener('click', () => {
+        localStorage.removeItem('usuario_logado');
+        areaLogado.style.display = 'none';
+        areaDeslogado.style.display = 'block';
+        formLogin.reset();
+        document.getElementById('mensagem-login').textContent = "";
+      });
+    }
+
+    function mostrarAreaLogado(usuario) {
+      document.getElementById('nome-usuario-logado').textContent = usuario.nome;
+      document.getElementById('tipo-conta-logado').textContent = 
+        (usuario.tipo_conta === 'dependente') ? 'Subconta Familiar' : 'Conta Principal (Titular)';
+      
+      areaDeslogado.style.display = 'none';
+      areaLogado.style.display = 'block';
+    }
+
+    // Ação de CADASTRO (Familiar)
+    if (formCadastro) {
+      formCadastro.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const tipoConta = document.getElementById('tipo-conta').value;
+        const nome = document.getElementById('nome-cadastro').value.trim();
+        const cpf = document.getElementById('cpf-cadastro').value.trim();
+        const cpfResponsavel = document.getElementById('cpf-responsavel').value.trim();
+        const dataNascimento = document.getElementById('nascimento-cadastro').value;
+        const email = document.getElementById('email-cadastro').value.trim();
+        const senha = document.getElementById('senha-cadastro').value;
+        const mensagem = document.getElementById('mensagem-cadastro');
+
+        mensagem.textContent = "Criando sua conta...";
+        mensagem.style.color = '#593778';
+
+        try {
+          const { data, error } = await supabase
+            .from('usuarios')
+            .insert([{
+              nome: nome,
+              email: email,
+              senha: senha,
+              cpf: cpf,
+              data_nascimento: dataNascimento,
+              tipo_conta: tipoConta,
+              cpf_responsavel: tipoConta === 'dependente' ? cpfResponsavel : null
+            }])
+            .select();
+
+          if (error) throw error;
+
+          mensagem.textContent = "Cadastro realizado com sucesso! Faça seu login.";
+          mensagem.style.color = 'green';
+          formCadastro.reset();
+          if (campoResponsavel) campoResponsavel.style.display = 'none';
+          setTimeout(() => abaLogin.click(), 1500);
+
+        } catch (error) {
+          mensagem.textContent = 'Erro ao cadastrar: ' + error.message;
+          mensagem.style.color = 'red';
+        }
+      });
+    }
   </script>
 </body>
 </html>
