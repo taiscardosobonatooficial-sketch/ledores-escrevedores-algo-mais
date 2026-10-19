@@ -3,19 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ledores e Escrevedores — Algo Mais</title>
+  <title>Ledores e Escrevedores — Algo Mais (Outubro Rosa)</title>
   
   <!-- Supabase JS -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   
   <style>
     :root {
-      --primary-color: #5c3d75;
-      --secondary-color: #8b5cf6;
-      --bg-color: #f8f5fa;
+      --primary-color: #d946ef; /* Tom Outubro Rosa / Magenta elegante */
+      --secondary-color: #ec4899;
+      --bg-color: #fdf2f8;
       --card-bg: #ffffff;
       --text-color: #2d2b32;
-      --accent-color: #d97706;
+      --accent-color: #f43f5e;
     }
 
     body {
@@ -28,15 +28,25 @@
     }
 
     header {
-      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      background: linear-gradient(135deg, #be185d, var(--primary-color), var(--secondary-color));
       color: white;
-      padding: 2rem 1rem;
+      padding: 2.5rem 1rem;
       text-align: center;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 15px rgba(219, 70, 239, 0.2);
     }
 
-    header h1 { margin: 0; font-size: 2.2rem; }
-    header p { margin-top: 0.5rem; opacity: 0.9; }
+    header h1 { margin: 0; font-size: 2.3rem; }
+    header p { margin-top: 0.5rem; opacity: 0.95; font-size: 1.1rem; }
+
+    .banner-rosa {
+      background-color: #fbcfe8;
+      color: #831843;
+      text-align: center;
+      padding: 10px;
+      font-weight: bold;
+      font-size: 0.95rem;
+      border-bottom: 1px solid #f472b6;
+    }
 
     nav {
       background: white;
@@ -52,7 +62,7 @@
       background: transparent;
       border: 2px solid var(--primary-color);
       color: var(--primary-color);
-      padding: 8px 16px;
+      padding: 8px 18px;
       border-radius: 20px;
       cursor: pointer;
       font-weight: bold;
@@ -76,6 +86,7 @@
       padding: 1.5rem;
       margin-bottom: 2rem;
       box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+      border-top: 4px solid var(--primary-color);
     }
 
     .card h2 {
@@ -98,7 +109,7 @@
     .form-group input, .form-group select, .form-group textarea {
       width: 100%;
       padding: 10px;
-      border: 1px solid #ccc;
+      border: 1px solid #cbd5e1;
       border-radius: 8px;
       box-sizing: border-box;
       font-size: 1rem;
@@ -123,7 +134,7 @@
     }
 
     .btn:hover {
-      background: var(--secondary-color);
+      background: #be185d;
     }
 
     .btn-whatsapp {
@@ -151,13 +162,14 @@
       box-shadow: 0 3px 10px rgba(0,0,0,0.1);
       display: flex;
       flex-direction: column;
+      border: 1px solid #fce7f3;
     }
 
     .book-cover {
       width: 100%;
       height: 280px;
       object-fit: cover;
-      background-color: #eee;
+      background-color: #f1f5f9;
     }
 
     .book-info {
@@ -171,12 +183,12 @@
       font-size: 1.1rem;
       font-weight: bold;
       margin: 0 0 5px 0;
-      color: var(--primary-color);
+      color: #9d174d;
     }
 
     .book-author {
       font-size: 0.9rem;
-      color: #666;
+      color: #64748b;
       margin-bottom: 10px;
     }
 
@@ -186,9 +198,10 @@
       border-radius: 12px;
       font-size: 0.75rem;
       font-weight: bold;
-      background: #e9d5ff;
-      color: #6b21a8;
+      background: #fce7f3;
+      color: #be185d;
       margin-right: 5px;
+      margin-bottom: 5px;
     }
 
     .tab-content { display: none; }
@@ -196,6 +209,10 @@
   </style>
 </head>
 <body>
+
+  <div class="banner-rosa">
+    🎀 Outubro Rosa — Celebrando a vida, a saúde e a literatura em família!
+  </div>
 
   <header>
     <h1>Ledores e Escrevedores — Algo Mais</h1>
@@ -361,7 +378,6 @@
       let capaUrl = '';
       const arquivoInput = document.getElementById('capa-arquivo');
       
-      // Upload da capa se houver arquivo
       if (arquivoInput.files.length > 0) {
         const file = arquivoInput.files[0];
         const fileName = `${Date.now()}_${file.name}`;
@@ -424,7 +440,6 @@
       const tituloCap = document.getElementById('titulo-capitulo').value;
       const conteudoCap = document.getElementById('conteudo-capitulo').value;
 
-      // Busca conteúdo antigo para anexar o novo capítulo
       const { data: livro } = await supabaseClient.from('livros').select('conteudo').eq('id', livroId).single();
       
       if (livro) {
@@ -466,4 +481,18 @@
               <h3 class="book-title">${item.titulo}</h3>
               <p class="book-author">Por ${item.autor}</p>
               <div>
-                <span class="badge">${item
+                <span class="badge">${item.categoria || 'Livro'}</span>
+                <span class="badge">${item.genero || 'Geral'}</span>
+                <span class="badge" style="background:#fbcfe8; color:#831843;">${item.tipo_obra || 'Obra Contínua'}</span>
+              </div>
+              <p style="font-size:0.85rem; color:#555; margin-top:8px;">${item.sinopse ? item.sinopse.substring(0, 90) + '...' : ''}</p>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    window.onload = carregarLivros;
+  </script>
+</body>
+</html>
