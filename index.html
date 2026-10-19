@@ -489,34 +489,63 @@
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    const formCadastro = document.getElementById('form-cadastro');
-    const mensagemCadastro = document.getElementById('mensagem-cadastro');
+   
+const formCadastro = document.getElementById('form-cadastro');
+const mensagemCadastro = document.getElementById('mensagem-cadastro');
 
-    if (formCadastro) {
-      formCadastro.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        const nome = document.getElementById('nome-cadastro').value;
-        const email = document.getElementById('email-cadastro').value;
-        const senha = document.getElementById('senha-cadastro').value;
+if (formCadastro) {
+  formCadastro.addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-        mensagemCadastro.textContent = "Salvando cadastro...";
-        mensagemCadastro.style.color = "#593778";
+    const nome = document.getElementById('nome-cadastro').value.trim();
+    const email = document.getElementById('email-cadastro').value.trim();
+    const senha = document.getElementById('senha-cadastro').value;
 
-        const { data, error } = await supabase
-          .from('usuarios')
-          .insert([{ nome: nome, email: email, senha: senha }]);
+    mensagemCadastro.textContent = 'Criando sua conta...';
+    mensagemCadastro.style.color = '#593778';
 
-        if (error) {
-          mensagemCadastro.textContent = "Erro ao cadastrar: " + error.message;
-          mensagemCadastro.style.color = "red";
-        } else {
-          mensagemCadastro.textContent = "Cadastro realizado com sucesso! Bem-vindo(a)!";
-          mensagemCadastro.style.color = "green";
-          formCadastro.reset();
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password: senha,
+        options: {
+          data: { nome }
         }
       });
+
+      if (error) throw error;
+
+      if (data.session && data.user) {
+        const { error: perfilError } = await supabase
+          .from('usuarios')
+          .upsert({
+            id: data.user.id,
+            nome,
+            email
+          });
+
+        if (perfilError) {
+          throw new Error(
+            'A conta foi criada, mas não foi possível salvar o perfil. ' +
+            perfilError.message
+          );
+        }
+      }
+
+      mensagemCadastro.textContent = data.session
+        ? 'Cadastro realizado com sucesso! Bem-vindo(a)!'
+        : 'Conta criada! Confira seu e-mail para confirmar o cadastro.';
+
+      mensagemCadastro.style.color = 'green';
+      formCadastro.reset();
+
+    } catch (error) {
+      mensagemCadastro.textContent = 'Erro ao cadastrar: ' + error.message;
+      mensagemCadastro.style.color = 'red';
     }
+  });
+}
+
   </script>
 </body>
 </html>
