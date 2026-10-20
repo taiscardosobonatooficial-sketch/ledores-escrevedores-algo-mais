@@ -43,4 +43,334 @@
     .grid-obras { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 18px; margin-top: 15px; }
     .obra-item { background: var(--cartao); border: 1px solid var(--borda); border-radius: 12px; padding: 14px; text-align: center; display: flex; flex-direction: column; justify-content: space-between; }
     .obra-item img { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; }
-    .tag { display: inline-block; background: var(--borda); color: var(--texto); font-size: 11px; padding: 3px 8px; border-radius: 1
+    .tag { display: inline-block; background: var(--borda); color: var(--texto); font-size: 11px; padding: 3px 8px; border-radius: 10px; font-weight: bold; margin: 8px 0 4px; }
+    .btn-acao { background: var(--botao); color: white; border: none; padding: 10px 14px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; font-size: 14px; }
+    .btn-acao:hover { filter: brightness(1.1); }
+    
+    input, select, textarea { width: 100%; padding: 11px; margin: 6px 0 14px; border: 1px solid var(--borda); border-radius: 8px; font-family: inherit; font-size: 14px; }
+
+    /* Modal do Leitor e de Login */
+    .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); z-index: 1000; display: none; justify-content: center; align-items: center; padding: 15px; }
+    .modal-caixa { background: #fff; color: #333; width: 100%; max-width: 750px; max-height: 85vh; overflow-y: auto; padding: 30px; border-radius: 16px; position: relative; line-height: 1.8; }
+
+    /* Ícone Flutuante do WhatsApp */
+    .whats-float { position: fixed; bottom: 20px; right: 20px; background: var(--whatsapp); color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.3); text-decoration: none; font-size: 30px; z-index: 999; transition: transform 0.2s; }
+    .whats-float:hover { transform: scale(1.1); }
+  </style>
+</head>
+<body data-theme="rosa">
+
+  <header>
+    <div class="auth-bar">
+      <span id="user-info">👤 Visitante (Não conectado)</span>
+      <div class="auth-btns">
+        <button id="btn-login-modal" onclick="abrirModalAuth('login')">Entrar</button>
+        <button id="btn-cadastro-modal" onclick="abrirModalAuth('cadastro')">Cadastrar</button>
+        <button id="btn-logout" onclick="fazerLogout()" style="display:none; background:#ff5252; color:white;">Sair</button>
+      </div>
+    </div>
+    <h1>📚 Ledores e Escrevedores</h1>
+    <p>Algo Mais — Histórias que aproximam pessoas</p>
+  </header>
+
+  <nav>
+    <a href="#acervo">📖 Acervo & Estantes</a>
+    <a href="#publicar">✍️ Escrever & Publicar</a>
+    <a href="#ajuda">💬 Créditos & Suporte</a>
+  </nav>
+
+  <main>
+    <!-- Banner de Tema Dinâmico -->
+    <section class="card" style="background: var(--principal); color: white; text-align: center;">
+      <h2 id="theme-banner-title" style="margin-top:0;">🎀 Outubro Rosa</h2>
+      <p id="theme-banner-desc">Histórias de coragem, superação, força e esperança.</p>
+    </section>
+
+    <!-- Acervo com Estantes de Categorias -->
+    <section id="acervo" class="card">
+      <h2>📖 Estantes de Obras</h2>
+      <p>Selecione uma estante para filtrar o tipo de publicação:</p>
+      
+      <div class="estantes-bar">
+        <button class="btn-estante ativo" onclick="filtrarEstante('todas', this)">📚 Todas as Obras</button>
+        <button class="btn-estante" onclick="filtrarEstante('Livro', this)">📖 Livros</button>
+        <button class="btn-estante" onclick="filtrarEstante('Diário', this)">📔 Diários</button>
+        <button class="btn-estante" onclick="filtrarEstante('Jornal/Revista', this)">📰 Jornais / Revistas</button>
+        <button class="btn-estante" onclick="filtrarEstante('Redação/Documento', this)">📄 Redações & Documentos</button>
+        <button class="btn-estante" onclick="filtrarEstante('Conto/Aventura', this)">🤠 Contos & Aventuras</button>
+      </div>
+
+      <div id="lista-obras" class="grid-obras">
+        <p style="grid-column: 1/-1; text-align: center; color: #777;">Carregando acervo do site...</p>
+      </div>
+    </section>
+
+    <!-- Formulário de Publicação -->
+    <section id="publicar" class="card">
+      <h2>✍️ Publicar Nova Obra</h2>
+      <p>Escreva diretamente como em um bloco de notas:</p>
+
+      <form id="form-publicar">
+        <label><strong>Título da Obra:</strong></label>
+        <input type="text" id="pub-titulo" required placeholder="Ex: As Crônicas do Meu Bairro">
+
+        <label><strong>Nome do Autor(a):</strong></label>
+        <input type="text" id="pub-autor" required placeholder="Ex: Maria Silva">
+
+        <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+          <div style="flex: 1; min-width: 180px;">
+            <label><strong>Tipo de Estante:</strong></label>
+            <select id="pub-categoria">
+              <option value="Livro">📖 Livro Completo</option>
+              <option value="Diário">📔 Diário</option>
+              <option value="Jornal/Revista">📰 Jornal / Revista</option>
+              <option value="Redação/Documento">📄 Redação / Documento</option>
+              <option value="Conto/Aventura">🤠 Conto / Aventura</option>
+            </select>
+          </div>
+
+          <div style="flex: 1; min-width: 180px;">
+            <label><strong>Gênero / Estilo:</strong></label>
+            <select id="pub-genero">
+              <option value="Romance">Romance</option>
+              <option value="Aventura">Aventura</option>
+              <option value="Investigação">Investigação</option>
+              <option value="Memórias/Real">Memórias / Vida Real</option>
+              <option value="Poesia/Comédia">Poesia / Comédia</option>
+              <option value="Geral/Livre">Geral / Livre</option>
+            </select>
+          </div>
+        </div>
+
+        <label><strong>Capa do Livro (Imagem):</strong></label>
+        <input type="file" id="pub-capa-file" accept="image/*" style="background:#fff;">
+
+        <label><strong>Sinopse / Breve Resumo:</strong></label>
+        <textarea id="pub-sinopse" rows="2" placeholder="Resumo simples da história..."></textarea>
+
+        <label><strong>Texto Completo da Obra:</strong></label>
+        <textarea id="pub-conteudo" rows="10" required placeholder="Digite seu texto aqui..."></textarea>
+
+        <button type="submit" class="btn-acao">🚀 Publicar Obra no Acervo</button>
+        <p id="msg-pub" style="font-weight: bold; margin-top: 10px;"></p>
+      </form>
+    </section>
+
+    <!-- Suporte / WhatsApp -->
+    <section id="ajuda" class="card" style="background: #f0faf3; border: 2px solid #a3e6b8; text-align: center;">
+      <h3 style="color:#1e7e43; margin-top:0;">💬 Adquirir Créditos & Suporte</h3>
+      <p>Acesse o suporte direto pelo WhatsApp para renovação de créditos e tiragem de dúvidas!</p>
+      <a href="https://wa.me/5541984251049?text=Olá!%20Gostaria%20de%20comprar%20créditos%20para%20o%20site%20Ledores%20e%20Escrevedores." target="_blank" style="display:inline-block; background:var(--whatsapp); color:white; text-decoration:none; font-weight:bold; padding:12px 24px; border-radius:30px;">
+        📱 Chamar no WhatsApp
+      </a>
+    </section>
+  </main>
+
+  <!-- Botão Flutuante do WhatsApp -->
+  <a href="https://wa.me/5541984251049?text=Olá!%20Preciso%20de%20ajuda%20no%20Ledores%20e%20Escrevedores." target="_blank" class="whats-float" title="Suporte no WhatsApp">
+    💬
+  </a>
+
+  <!-- Modal do Leitor -->
+  <div id="modal-leitura" class="modal">
+    <div class="modal-caixa">
+      <button onclick="document.getElementById('modal-leitura').style.display='none'" style="position: absolute; top: 15px; right: 15px; background: #d81b60; color: #fff; border: none; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-weight: bold;">✕ Fechar</button>
+      <span id="read-tag" class="tag"></span>
+      <h1 id="read-titulo" style="color: var(--principal); margin-top: 10px;"></h1>
+      <p id="read-autor" style="color: #666; font-style: italic;"></p>
+      <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+      <div id="read-conteudo" style="white-space: pre-wrap; font-family: Georgia, serif;"></div>
+    </div>
+  </div>
+
+  <!-- Modal de Cadastro / Login -->
+  <div id="modal-auth" class="modal">
+    <div class="modal-caixa" style="max-width: 400px;">
+      <button onclick="document.getElementById('modal-auth').style.display='none'" style="position: absolute; top: 15px; right: 15px; background: #999; color: #fff; border: none; padding: 6px 10px; border-radius: 8px; cursor: pointer;">✕</button>
+      <h2 id="auth-titulo" style="color: var(--principal); margin-top: 0;">Entrar na Conta</h2>
+      <form id="form-auth">
+        <label>E-mail:</label>
+        <input type="email" id="auth-email" required placeholder="seuemail@exemplo.com">
+        <label>Senha:</label>
+        <input type="password" id="auth-senha" required placeholder="••••••••">
+        <button type="submit" id="btn-auth-submit" class="btn-acao">Entrar</button>
+        <p id="auth-msg" style="font-size: 13px; font-weight: bold; margin-top: 10px;"></p>
+      </form>
+    </div>
+  </div>
+
+  <!-- Lógica JavaScript + Supabase -->
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+
+    const SUPABASE_URL = 'https://lytfzyaxtzwkycvusod.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_iAK7hj6ici39OQYBSgLEbA_gI9EMpMY';
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    let obrasCache = [];
+    let modoAuth = 'login';
+
+    // 1. Controle de Usuários (Login / Cadastro / Logout)
+    async function verificarUsuario() {
+      const { data: { user } } = await supabase.auth.getUser();
+      const userInfo = document.getElementById('user-info');
+      const btnLogin = document.getElementById('btn-login-modal');
+      const btnCad = document.getElementById('btn-cadastro-modal');
+      const btnLogout = document.getElementById('btn-logout');
+
+      if (user) {
+        userInfo.textContent = `👤 ${user.email}`;
+        btnLogin.style.display = 'none';
+        btnCad.style.display = 'none';
+        btnLogout.style.display = 'inline-block';
+      } else {
+        userInfo.textContent = '👤 Visitante (Não conectado)';
+        btnLogin.style.display = 'inline-block';
+        btnCad.style.display = 'inline-block';
+        btnLogout.style.display = 'none';
+      }
+    }
+
+    window.abrirModalAuth = function(tipo) {
+      modoAuth = tipo;
+      document.getElementById('auth-titulo').textContent = tipo === 'login' ? 'Entrar na Conta' : 'Criar Nova Conta';
+      document.getElementById('btn-auth-submit').textContent = tipo === 'login' ? 'Entrar' : 'Cadastrar';
+      document.getElementById('auth-msg').textContent = '';
+      document.getElementById('modal-auth').style.display = 'flex';
+    };
+
+    document.getElementById('form-auth').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('auth-email').value;
+      const password = document.getElementById('auth-senha').value;
+      const msg = document.getElementById('auth-msg');
+
+      msg.textContent = 'Aguarde...'; msg.style.color = 'var(--principal)';
+
+      if (modoAuth === 'cadastro') {
+        const { error } = await supabase.auth.signUp({ email, password });
+        if (error) { msg.textContent = error.message; msg.style.color = 'red'; }
+        else { msg.textContent = 'Cadastro realizado! Verifique seu e-mail para confirmar.'; msg.style.color = 'green'; }
+      } else {
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) { msg.textContent = 'Erro ao entrar: ' + error.message; msg.style.color = 'red'; }
+        else {
+          document.getElementById('modal-auth').style.display = 'none';
+          verificarUsuario();
+        }
+      }
+    });
+
+    window.fazerLogout = async function() {
+      await supabase.auth.signOut();
+      verificarUsuario();
+    };
+
+    // 2. Carregar Obras e Filtro por Estante
+    async function carregarObras() {
+      const container = document.getElementById('lista-obras');
+      const { data, error } = await supabase.from('livros').select('*').order('id', { ascending: false });
+
+      if (error) {
+        container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: red;">Erro ao carregar: ${error.message}</p>`;
+        return;
+      }
+
+      obrasCache = data || [];
+      renderizarObras(obrasCache);
+    }
+
+    function renderizarObras(lista) {
+      const container = document.getElementById('lista-obras');
+      if (lista.length === 0) {
+        container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #777;">Nenhuma obra nesta estante ainda.</p>';
+        return;
+      }
+
+      container.innerHTML = '';
+      lista.forEach(obra => {
+        const item = document.createElement('div');
+        item.className = 'obra-item';
+        item.innerHTML = `
+          <div>
+            <img src="${obra.capa_url || 'https://via.placeholder.com/200x280?text=Sem+Capa'}" alt="Capa">
+            <span class="tag">${obra.categoria || 'Livro'} • ${obra.genero || 'Geral'}</span>
+            <h3 style="margin: 6px 0; color: var(--principal); font-size: 16px;">${obra.titulo}</h3>
+            <p style="font-size: 12px; color: #666; font-style: italic;">Por ${obra.autor}</p>
+            <p style="font-size: 12px; color: #444; margin-bottom: 12px;">${obra.sinopse || 'Sem resumo.'}</p>
+          </div>
+          <button class="btn-acao" onclick="abrirLeitor(${obra.id})">📖 Ler Obra</button>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    window.filtrarEstante = function(categoria, btn) {
+      document.querySelectorAll('.btn-estante').forEach(b => b.classList.remove('ativo'));
+      btn.classList.add('ativo');
+
+      if (categoria === 'todas') {
+        renderizarObras(obrasCache);
+      } else {
+        const filtradas = obrasCache.filter(o => o.categoria === categoria);
+        renderizarObras(filtradas);
+      }
+    };
+
+    // 3. Leitor Modal
+    window.abrirLeitor = async function(id) {
+      const { data } = await supabase.from('livros').select('*').eq('id', id).single();
+      if (!data) return;
+
+      document.getElementById('read-tag').textContent = `${data.categoria} • ${data.genero}`;
+      document.getElementById('read-titulo').textContent = data.titulo;
+      document.getElementById('read-autor').textContent = `Autor(a): ${data.autor}`;
+      document.getElementById('read-conteudo').textContent = data.conteudo;
+      document.getElementById('modal-leitura').style.display = 'flex';
+    };
+
+    // 4. Publicar
+    document.getElementById('form-publicar').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const msg = document.getElementById('msg-pub');
+      msg.textContent = "Publicando..."; msg.style.color = "var(--principal)";
+
+      let capaUrl = 'https://via.placeholder.com/200x280?text=Sem+Capa';
+      const fileInput = document.getElementById('pub-capa-file');
+
+      if (fileInput.files.length > 0) {
+        const file = fileInput.files[0];
+        const fileName = `${Date.now()}_${file.name}`;
+        const { error: uploadError } = await supabase.storage.from('capas').upload(fileName, file);
+        if (!uploadError) {
+          const { data: urlData } = supabase.storage.from('capas').getPublicUrl(fileName);
+          capaUrl = urlData.publicUrl;
+        }
+      }
+
+      const novaObra = {
+        titulo: document.getElementById('pub-titulo').value.trim(),
+        autor: document.getElementById('pub-autor').value.trim(),
+        categoria: document.getElementById('pub-categoria').value,
+        genero: document.getElementById('pub-genero').value,
+        sinopse: document.getElementById('pub-sinopse').value.trim(),
+        conteudo: document.getElementById('pub-conteudo').value.trim(),
+        capa_url: capaUrl
+      };
+
+      const { error } = await supabase.from('livros').insert([novaObra]);
+
+      if (error) {
+        msg.textContent = "Erro: " + error.message; msg.style.color = "red";
+      } else {
+        msg.textContent = "🎉 Publicado com sucesso!"; msg.style.color = "green";
+        document.getElementById('form-publicar').reset();
+        carregarObras();
+      }
+    });
+
+    verificarUsuario();
+    carregarObras();
+  </script>
+</body>
+</html>
