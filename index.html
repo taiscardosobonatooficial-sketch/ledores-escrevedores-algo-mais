@@ -25,19 +25,31 @@
     header {
       background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
       color: white;
-      padding: 2rem 1rem;
+      padding: 1.5rem 1rem;
       text-align: center;
       box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
 
     header h1 {
       margin: 0;
-      font-size: 2.5rem;
+      font-size: 2.2rem;
     }
 
-    header p {
-      margin-top: 0.5rem;
-      opacity: 0.9;
+    .user-bar {
+      background: #ffffff;
+      padding: 0.8rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+
+    .credits-badge {
+      background: #e8f5e9;
+      color: #2e7d32;
+      padding: 0.4rem 0.8rem;
+      border-radius: 20px;
+      font-weight: bold;
     }
 
     .container {
@@ -107,6 +119,13 @@
       background-color: #c2185b;
     }
 
+    .btn-danger {
+      background-color: #e53935;
+    }
+    .btn-danger:hover {
+      background-color: #c62828;
+    }
+
     .catalog-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -139,7 +158,6 @@
     .badge-tipo { background-color: #f3e5f5; color: #6a1b9a; }
     .badge-genero { background-color: #fce4ec; color: #c2185b; }
 
-    /* Modal de leitura */
     .modal {
       display: none;
       position: fixed;
@@ -166,6 +184,12 @@
       cursor: pointer;
       color: #888;
     }
+
+    .card-actions {
+      margin-top: 1rem;
+      display: flex;
+      gap: 0.5rem;
+    }
   </style>
 </head>
 <body>
@@ -174,6 +198,17 @@
     <h1>Ledores Escrevedores Algo Mais</h1>
     <p>Plataforma de Leitura, Escrita e Compartilhamento</p>
   </header>
+
+  <!-- Barra do Usuário & Créditos -->
+  <div class="user-bar">
+    <div id="userInfo">
+      <span id="userName">Visitante</span>
+      <span class="credits-badge">Créditos: <span id="userCredits">0</span></span>
+    </div>
+    <div>
+      <button id="authBtn" onclick="toggleAuthModal()">Entrar / Cadastrar</button>
+    </div>
+  </div>
 
   <div class="container">
     <!-- Formulário de Publicação -->
@@ -247,6 +282,7 @@
         <div class="form-group">
           <label for="conteudo">Conteúdo / Texto</label>
           <textarea id="conteudo" rows="6" required placeholder="Escreva ou cole seu texto aqui..."></textarea>
+          <small id="palavrasInfo" style="color: #666;">Palavras: 0 | Créditos a ganhar se mantido: 0</small>
         </div>
 
         <button type="submit">Publicar Obra</button>
@@ -265,7 +301,7 @@
   <!-- Modal de Leitura -->
   <div id="leituraModal" class="modal">
     <div class="modal-content">
-      <span class="close-btn" onclick="fecharModal()">&times;</span>
+      <span class="close-btn" onclick="fecharModal('leituraModal')">&times;</span>
       <h2 id="modalTitulo"></h2>
       <div id="modalBadges" style="margin-bottom: 1rem;"></div>
       <p><strong>Autor:</strong> <span id="modalAutor"></span></p>
@@ -277,9 +313,8 @@
   <!-- Firebase Scripts -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    // Chaves do Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyDuJpZ09ofLYD7NjCNkJiC-WoB66qKAvMU",
       authDomain: "ledores-escrevedores-algo-mais.firebaseapp.com",
@@ -292,7 +327,22 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // Ajustar automáticos (Ex: Jornal/Diário -> Em Produção)
+    // Monitorar quantidade de palavras e créditos
+    const conteudoInput = document.getElementById("conteudo");
+    const palavrasInfo = document.getElementById("palavrasInfo");
+
+    conteudoInput.addEventListener("input", () => {
+      const texto = conteudoInput.value.trim();
+      const numPalavras = texto ? texto.split(/\s+/).length : 0;
+      
+      let creditos = 0;
+      if (numPalavras >= 200) {
+        creditos = Math.floor((numPalavras / 3) * 4);
+      }
+
+      palavrasInfo.innerText = `Palavras: ${numPalavras} | Créditos estimados a ganhar (min. 200 palavras): ${creditos}`;
+    });
+
     window.ajustarStatusAutomatico = function() {
       const tipo = document.getElementById("tipoObra").value;
       const statusSelect = document.getElementById("statusObra");
@@ -305,26 +355,59 @@
     document.getElementById("publicarForm").addEventListener("submit", async (e) => {
       e.preventDefault();
 
+      const texto = document.getElementById("conteudo").value.trim();
+      const numPalavras = texto ? texto.split(/\s+/).length : 0;
+      let creditosGerados = 0;
+      if (numPalavras >= 200) {
+        creditosGerados = Math.floor((numPalavras / 3) * 4);
+      }
+
       const novaObra = {
         titulo: document.getElementById("titulo").value,
         autor: document.getElementById("autor").value,
         tipo: document.getElementById("tipoObra").value,
         status: document.getElementById("statusObra").value,
         genero: document.getElementById("genero").value,
-        conteudo: document.getElementById("conteudo").value,
-        dataCriacao: new Date()
+        conteudo: texto,
+        numPalavras: numPalavras,
+        creditosGerados: creditosGerados,
+        dataCriacao: new Date().toISOString()
       };
 
       try {
         await addDoc(collection(db, "obras"), novaObra);
         alert("Obra publicada com sucesso!");
         document.getElementById("publicarForm").reset();
+        palavrasInfo.innerText = "Palavras: 0 | Créditos a ganhar se mantido: 0";
         carregarObras();
       } catch (error) {
         console.error("Erro ao publicar:", error);
-        alert("Erro ao publicar a obra. Verifique a sua ligação.");
+        alert("Erro ao publicar a obra. Verifique sua conexão.");
       }
     });
+
+    // Função para deletar obra (Até 5 dias)
+    window.deletarObra = async function(idObra, dataCriacaoIso) {
+      const dataCriacao = new Date(dataCriacaoIso);
+      const agora = new Date();
+      const diferencaDias = (agora - dataCriacao) / (1000 * 60 * 60 * 24);
+
+      if (diferencaDias > 5) {
+        alert("O prazo de 5 dias para deletar a obra expirou. Esta obra agora faz parte do acervo permanente.");
+        return;
+      }
+
+      if (confirm("Tem certeza que deseja deletar esta obra? Esta ação não pode ser desfeita.")) {
+        try {
+          await deleteDoc(doc(db, "obras", idObra));
+          alert("Obra deletada com sucesso!");
+          carregarObras();
+        } catch (error) {
+          console.error("Erro ao deletar obra:", error);
+          alert("Erro ao deletar obra.");
+        }
+      }
+    };
 
     // Carregar Obras no Catálogo
     async function carregarObras() {
@@ -341,10 +424,17 @@
         }
 
         obrasGrid.innerHTML = "";
-        querySnapshot.forEach((doc) => {
-          const obra = doc.data();
+        querySnapshot.forEach((docSnapshot) => {
+          const obra = docSnapshot.data();
+          const id = docSnapshot.id;
           
           const statusClass = obra.status === "Pronto" ? "badge-status-pronto" : "badge-status-producao";
+
+          // Verificar prazo de 5 dias para o botão de deletar
+          const dataCriacao = new Date(obra.dataCriacao);
+          const agora = new Date();
+          const diferencaDias = (agora - dataCriacao) / (1000 * 60 * 60 * 24);
+          const podeDeletar = diferencaDias <= 5;
 
           const card = document.createElement("div");
           card.className = "obra-card";
@@ -358,7 +448,10 @@
                 <span class="obra-badge badge-genero">${obra.genero}</span>
               </div>
             </div>
-            <button style="margin-top: 1rem;" onclick="abrirLeitura('${escapeHtml(obra.titulo)}', '${escapeHtml(obra.autor)}', '${escapeHtml(obra.status)}', '${escapeHtml(obra.tipo)}', '${escapeHtml(obra.genero)}', '${escapeHtml(obra.conteudo)}')">Ler Obra</button>
+            <div class="card-actions">
+              <button style="flex: 1;" onclick="abrirLeitura('${escapeHtml(obra.titulo)}', '${escapeHtml(obra.autor)}', '${escapeHtml(obra.status)}', '${escapeHtml(obra.tipo)}', '${escapeHtml(obra.genero)}', '${escapeHtml(obra.conteudo)}')">Ler Obra</button>
+              ${podeDeletar ? `<button class="btn-danger" onclick="deletarObra('${id}', '${obra.dataCriacao}')">Deletar (${Math.ceil(5 - diferencaDias)}d)</button>` : ''}
+            </div>
           `;
           obrasGrid.appendChild(card);
         });
@@ -384,11 +477,10 @@
       document.getElementById("leituraModal").style.display = "flex";
     };
 
-    window.fecharModal = function() {
-      document.getElementById("leituraModal").style.display = "none";
+    window.fecharModal = function(modalId) {
+      document.getElementById(modalId).style.display = "none";
     };
 
-    // Carregar na abertura
     carregarObras();
   </script>
 </body>
