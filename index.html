@@ -7,9 +7,6 @@
   <meta name="theme-color" content="#593778">
   <title>Ledores e Escrevedores — Algo Mais</title>
 
-  <!-- Carregamento do SDK do Supabase -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
   <style>
     * { box-sizing: border-box; }
 
@@ -244,7 +241,7 @@
       color: white;
       padding: 12px 22px;
       border: none;
-      border-radius: 99px;
+      border-radius: 9px;
       font-weight: bold;
       cursor: pointer;
       font-size: 16px;
@@ -360,7 +357,7 @@
       </ul>
     </section>
 
-    <!-- Estantes do Site (Categorias e Gêneros) -->
+    <!-- Estantes do Site -->
     <section class="secao-estantes" id="estantes">
       <h2>📖 Nossas Estantes Virtuais</h2>
       <div class="grid-estantes">
@@ -400,7 +397,7 @@
     <!-- Semana Especial da Reforma Protestante -->
     <section id="semana-reforma" style="display:none; background:#fff0f6; color:#63345f; padding:28px 20px; margin:25px auto; border-radius:16px; text-align:center;">
       <h2 style="color:#9b4b91;">🌷 Semana da Reforma Protestante</h2>
-      <p><strong>De 27 a 31 de outubro</strong></p>
+      <p><strong>De 25 a 31 de outubro</strong></p>
 
       <div style="background: white; border: 2px dashed #9b4b91; padding: 20px; border-radius: 12px; margin: 20px auto; max-width: 760px; text-align: left;">
         <h3 style="margin-top:0; color:#593778; text-align:center;">📜 O Impacto da Reforma na Leitura e na Educação</h3>
@@ -417,7 +414,6 @@
       <h2>✍️ Publicar Nova História / Capítulo</h2>
       <p>Escreva diretamente no site sem precisar criar arquivos HTML!</p>
 
-      <!-- Escolha de Modo -->
       <div style="margin-bottom: 20px;">
         <label><strong>O que você deseja fazer?</strong></label><br>
         <select id="pub-modo" style="width: 100%; padding: 10px; margin-top: 8px; border: 1px solid var(--borda); border-radius: 6px; font-weight: bold; background: #f0e8f5;">
@@ -449,12 +445,12 @@
 
           <div style="flex: 1; min-width: 180px;">
             <label><strong>Gênero / Estilo:</strong></label><br>
-            <input type="text" id="pub-genero" placeholder="Ex: Memórias, Conto, Fofoca, História de Pescador..." style="width: 100%; padding: 10px; margin: 8px 0 16px; border: 1px solid var(--borda); border-radius: 6px;"><br>
+            <input type="text" id="pub-genero" placeholder="Ex: Memórias, Conto, Fofoca..." style="width: 100%; padding: 10px; margin: 8px 0 16px; border: 1px solid var(--borda); border-radius: 6px;"><br>
           </div>
         </div>
 
-        <label><strong>Link da Capa (Opcional - Pinterest ou Web):</strong></label><br>
-        <input type="url" id="pub-capa-url" placeholder="https://exemplo.com/imagem.jpg (Deixe em branco se preferir sem foto)" style="width: 100%; padding: 10px; margin: 8px 0 16px; border: 1px solid var(--borda); border-radius: 6px;"><br>
+        <label><strong>Capa da Obra (Selecione o arquivo da foto):</strong></label><br>
+        <input type="file" id="pub-capa-file" accept="image/*" style="width: 100%; padding: 10px; margin: 8px 0 16px; border: 1px solid var(--borda); border-radius: 6px; background: #fff;"><br>
 
         <label><strong>Sinopse / Resumo:</strong></label><br>
         <textarea id="pub-sinopse" rows="3" placeholder="Resumo do livro ou diário..." style="width: 100%; padding: 10px; margin: 8px 0 16px; border: 1px solid var(--borda); border-radius: 6px;"></textarea><br>
@@ -499,7 +495,6 @@
           <button id="aba-cadastro" class="btn-aba">Criar Conta (Cadastro)</button>
         </div>
 
-        <!-- Form Login -->
         <form id="form-login">
           <h2>🔑 Acessar sua conta</h2>
           <label>E-mail</label><br>
@@ -512,7 +507,6 @@
           <p id="mensagem-login" style="margin-top: 12px; font-weight: bold;"></p>
         </form>
 
-        <!-- Form Cadastro -->
         <form id="form-cadastro" style="display: none;">
           <h2>📚 Criar nova conta</h2>
           <label>Tipo de Conta</label><br>
@@ -565,13 +559,8 @@
     <p>Um projeto para quem ama ler e escrever. 💜</p>
   </footer>
 
-  <!-- Scripts de Temas e Supabase -->
+  <!-- Scripts Temáticos -->
   <script>
-    // Inicialização do Supabase usando a SDK global
-    const SUPABASE_URL = 'https://ebpllllnyhztrfgjvomj.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVicGxsbGxueWh6dHJmZ2p2b21qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAzMDgxNDQsImV4cCI6MjA3NTg4NDE0NH0.R8917Peb5L7Hly43P9q6zL8Jk8_x1x1Q1X1X1X1X1X1';
-    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
     function atualizarTema() {
       const agora = new Date();
       const mes = agora.getMonth() + 1;
@@ -586,8 +575,16 @@
       };
 
       let tema = temas.normal;
-      if (mes === 6) tema = (dia >= 9 && dia <= 14) ? temas.namorados : temas.junina;
-      else if (mes === 10) tema = (dia >= 10 && dia <= 14) ? temas.criancas : temas.rosa;
+      if (mes === 6) {
+        tema = (dia >= 9 && dia <= 14) ? temas.namorados : temas.junina;
+      } else if (mes === 10) {
+        // Semana das crianças de 10 a 14, nos demais dias de outubro fica rosa
+        if (dia >= 10 && dia <= 14) {
+          tema = temas.criancas;
+        } else {
+          tema = temas.rosa;
+        }
+      }
 
       document.body.dataset.theme = tema.classe;
       document.getElementById("theme-title").textContent = tema.titulo;
@@ -606,16 +603,24 @@
     }
     atualizarTema();
 
-    // Reforma Protestante
+    // Reforma Protestante (Ajustada para 25 a 31 de outubro)
     const agoraRef = new Date();
-    const inicioRef = new Date(agoraRef.getFullYear(), 9, 27);
+    const inicioRef = new Date(agoraRef.getFullYear(), 9, 25);
     const fimRef = new Date(agoraRef.getFullYear(), 9, 31, 23, 59, 59);
     const secaoReforma = document.getElementById("semana-reforma");
     if (secaoReforma && agoraRef >= inicioRef && agoraRef <= fimRef) {
       secaoReforma.style.display = "block";
     }
+  </script>
 
-    // Lógica do Formulário e Interação
+  <!-- Script Supabase, Autenticação, Publicação e Capítulos -->
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+
+    const SUPABASE_URL = 'https://ebpllllnyhztrfgjvomj.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVicGxsbGxueWh6dHJmZ2p2b21qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAzMDgxNDQsImV4cCI6MjA3NTg4NDE0NH0.R8917Peb5L7Hly43P9q6zL8Jk8_x1x1Q1X1X1X1X1X1';
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
     const pubModo = document.getElementById('pub-modo');
     const formObra = document.getElementById('form-publicar-obra');
     const formCapitulo = document.getElementById('form-publicar-capitulo');
@@ -670,7 +675,7 @@
       const msg = document.getElementById('mensagem-login');
 
       msg.textContent = "Verificando..."; msg.style.color = "#593778";
-      const { data, error } = await supabaseClient.from('usuarios').select('*').eq('email', email).eq('senha', senha).single();
+      const { data, error } = await supabase.from('usuarios').select('*').eq('email', email).eq('senha', senha).single();
 
       if (error || !data) {
         msg.textContent = "E-mail ou senha incorretos."; msg.style.color = "red";
@@ -703,7 +708,7 @@
         cpf_responsavel: document.getElementById('tipo-conta').value === 'dependente' ? document.getElementById('cpf-responsavel').value.trim() : null
       };
 
-      const { data, error } = await supabaseClient.from('usuarios').insert([payload]).select();
+      const { data, error } = await supabase.from('usuarios').insert([payload]).select();
 
       if (error) {
         msg.textContent = 'Erro ao cadastrar: ' + error.message; msg.style.color = 'red';
@@ -714,28 +719,48 @@
       }
     });
 
-    // Publicação de Nova Obra
     formObra.addEventListener('submit', async (e) => {
       e.preventDefault();
       const msg = document.getElementById('msg-publicar');
       msg.textContent = "Publicando sua história..."; msg.style.color = "#593778";
 
-      const capaUrlInput = document.getElementById('pub-capa-url').value.trim();
-      // Capa padrão estilizada em SVG com as cores do site
-      const capaPadrao = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="280" viewBox="0 0 200 280"><rect width="200" height="280" fill="%23593778"/><text x="50%" y="45%" fill="white" font-family="Georgia" font-size="16" text-anchor="middle">Ledores %26</text><text x="50%" y="55%" fill="white" font-family="Georgia" font-size="16" text-anchor="middle">Escrevedores</text></svg>';
-      const capaFinal = capaUrlInput || capaPadrao;
+      let capaUrl = 'https://via.placeholder.com/200x280?text=Sem+Capa';
+      const fileInput = document.getElementById('pub-capa-file');
+
+      if (fileInput.files.length > 0) {
+        const file = fileInput.files[0];
+        const fileName = `${Date.now()}_${file.name}`;
+
+        const { data: uploadData, error: uploadError } = await supabase
+          .storage
+          .from('capas')
+          .upload(fileName, file);
+
+        if (uploadError) {
+          msg.textContent = "Erro ao enviar imagem da capa: " + uploadError.message;
+          msg.style.color = "red";
+          return;
+        }
+
+        const { data: publicUrlData } = supabase
+          .storage
+          .from('capas')
+          .getPublicUrl(fileName);
+
+        capaUrl = publicUrlData.publicUrl;
+      }
 
       const payloadObra = {
         titulo: document.getElementById('pub-titulo').value.trim(),
         autor: document.getElementById('pub-autor').value.trim(),
         categoria: document.getElementById('pub-categoria').value,
         genero: document.getElementById('pub-genero').value.trim() || 'Geral',
-        capa_url: capaFinal,
+        capa_url: capaUrl,
         sinopse: document.getElementById('pub-sinopse').value.trim(),
         conteudo: document.getElementById('pub-conteudo').value.trim()
       };
 
-      const { data, error } = await supabaseClient.from('livros').insert([payloadObra]).select();
+      const { data, error } = await supabase.from('livros').insert([payloadObra]).select();
 
       if (error) {
         msg.textContent = "Erro ao publicar: " + error.message; msg.style.color = "red";
@@ -749,7 +774,7 @@
     async function carregarLivrosParaSelecao() {
       const select = document.getElementById('select-obra-existente');
       select.innerHTML = '<option value="">Carregando suas obras...</option>';
-      const { data } = await supabaseClient.from('livros').select('id, titulo');
+      const { data } = await supabase.from('livros').select('id, titulo');
 
       if (data && data.length > 0) {
         select.innerHTML = '<option value="">Selecione uma obra...</option>';
@@ -761,43 +786,12 @@
       }
     }
 
-    formCapitulo.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const msg = document.getElementById('msg-capitulo');
-      const livroId = document.getElementById('select-obra-existente').value;
-      const tituloCap = document.getElementById('cap-titulo').value.trim();
-      const conteudoCap = document.getElementById('cap-conteudo').value.trim();
-
-      if (!livroId) {
-        msg.textContent = "Selecione uma obra válida."; msg.style.color = "red";
-        return;
-      }
-
-      msg.textContent = "Anexando capítulo..."; msg.style.color = "#593778";
-
-      const { data: livro } = await supabaseClient.from('livros').select('conteudo').eq('id', livroId).single();
-
-      if (livro) {
-        const conteudoAtualizado = livro.conteudo + `\n\n---\n### 📖 ${tituloCap}\n\n` + conteudoCap;
-
-        const { error } = await supabaseClient.from('livros').update({ conteudo: conteudoAtualizado }).eq('id', livroId);
-
-        if (error) {
-          msg.textContent = "Erro ao adicionar capítulo: " + error.message; msg.style.color = "red";
-        } else {
-          msg.textContent = "📖 Capítulo adicionado com sucesso!"; msg.style.color = "green";
-          formCapitulo.reset();
-          carregarObras();
-        }
-      }
-    });
-
     async function carregarObras() {
       const container = document.getElementById('lista-obras');
-      const { data, error } = await supabaseClient.from('livros').select('*').order('created_at', { ascending: false });
+      const { data, error } = await supabase.from('livros').select('*').order('created_at', { ascending: false });
 
       if (error || !data || data.length === 0) {
-        container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #777;">Nenhuma obra publicada ainda. Seja a primeira a escrever!</p>';
+        container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #777;">Nenhuma obra publicada ainda. Seja o primeiro a escrever!</p>';
         return;
       }
 
@@ -805,10 +799,8 @@
       data.forEach(item => {
         const div = document.createElement('div');
         div.className = 'obra-item';
-        const capaPadrao = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="280" viewBox="0 0 200 280"><rect width="200" height="280" fill="%23593778"/><text x="50%" y="45%" fill="white" font-family="Georgia" font-size="16" text-anchor="middle">Ledores %26</text><text x="50%" y="55%" fill="white" font-family="Georgia" font-size="16" text-anchor="middle">Escrevedores</text></svg>';
-        
         div.innerHTML = `
-          <img src="${item.capa_url || capaPadrao}" alt="Capa da Obra">
+          <img src="${item.capa_url || 'https://via.placeholder.com/200x280?text=Sem+Capa'}" alt="Capa">
           <span class="tag-categoria">${item.categoria || 'Livro'} • ${item.genero || 'Geral'}</span>
           <h4>${item.titulo}</h4>
           <div class="autor">Por: ${item.autor}</div>
