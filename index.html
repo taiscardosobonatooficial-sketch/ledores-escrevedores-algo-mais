@@ -7,6 +7,9 @@
   <meta name="theme-color" content="#593778">
   <title>Ledores e Escrevedores — Algo Mais</title>
 
+  <!-- Carregamento do SDK do Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style>
     * { box-sizing: border-box; }
 
@@ -241,7 +244,7 @@
       color: white;
       padding: 12px 22px;
       border: none;
-      border-radius: 9px;
+      border-radius: 99px;
       font-weight: bold;
       cursor: pointer;
       font-size: 16px;
@@ -399,7 +402,6 @@
       <h2 style="color:#9b4b91;">🌷 Semana da Reforma Protestante</h2>
       <p><strong>De 27 a 31 de outubro</strong></p>
 
-      <!-- Bloco Editorial Protestantism / Luther -->
       <div style="background: white; border: 2px dashed #9b4b91; padding: 20px; border-radius: 12px; margin: 20px auto; max-width: 760px; text-align: left;">
         <h3 style="margin-top:0; color:#593778; text-align:center;">📜 O Impacto da Reforma na Leitura e na Educação</h3>
         <p>Em 31 de outubro de 1517, ao afixar as 95 Teses, Martinho Lutero deu início a um movimento que mudou não apenas a teologia, mas também a alfabetização mundial. A tradução da Bíblia para a língua do povo incentivou a criação de escolas e a universalização da leitura para homens, mulheres e crianças.</p>
@@ -415,7 +417,7 @@
       <h2>✍️ Publicar Nova História / Capítulo</h2>
       <p>Escreva diretamente no site sem precisar criar arquivos HTML!</p>
 
-      <!-- Escolha de Modo: Nova Obra ou Novo Capítulo -->
+      <!-- Escolha de Modo -->
       <div style="margin-bottom: 20px;">
         <label><strong>O que você deseja fazer?</strong></label><br>
         <select id="pub-modo" style="width: 100%; padding: 10px; margin-top: 8px; border: 1px solid var(--borda); border-radius: 6px; font-weight: bold; background: #f0e8f5;">
@@ -451,8 +453,8 @@
           </div>
         </div>
 
-        <label><strong>Link / URL da Capa (Imagem do Pinterest / Web):</strong></label><br>
-        <input type="url" id="pub-capa-url" placeholder="https://exemplo.com/imagem.jpg" style="width: 100%; padding: 10px; margin: 8px 0 16px; border: 1px solid var(--borda); border-radius: 6px;"><br>
+        <label><strong>Link da Capa (Opcional - Pinterest ou Web):</strong></label><br>
+        <input type="url" id="pub-capa-url" placeholder="https://exemplo.com/imagem.jpg (Deixe em branco se preferir sem foto)" style="width: 100%; padding: 10px; margin: 8px 0 16px; border: 1px solid var(--borda); border-radius: 6px;"><br>
 
         <label><strong>Sinopse / Resumo:</strong></label><br>
         <textarea id="pub-sinopse" rows="3" placeholder="Resumo do livro ou diário..." style="width: 100%; padding: 10px; margin: 8px 0 16px; border: 1px solid var(--borda); border-radius: 6px;"></textarea><br>
@@ -482,9 +484,8 @@
       </form>
     </section>
 
-    <!-- Área de Autenticação (Login & Cadastro Familiar) -->
+    <!-- Área de Autenticação -->
     <section id="area-conta" style="margin-top: 30px;">
-      <!-- Sessão Ativa -->
       <div id="area-logado" class="card" style="display: none; text-align: center; padding: 24px;">
         <h2>🌸 Olá, <span id="nome-usuario-logado">Leitor</span>!</h2>
         <p><strong>Tipo de Conta:</strong> <span id="tipo-conta-logado">Titular</span></p>
@@ -492,7 +493,6 @@
         <button id="btn-logoff" class="btn-logoff">Sair da Conta (Logoff)</button>
       </div>
 
-      <!-- Sessão Deslogado -->
       <div id="area-deslogado" class="card" style="padding: 24px;">
         <div style="display: flex; gap: 10px; margin-bottom: 20px;">
           <button id="aba-login" class="btn-aba ativa">Entrar (Login)</button>
@@ -547,7 +547,7 @@
       </div>
     </section>
 
-    <!-- Bloco de Compra de Créditos via WhatsApp -->
+    <!-- Bloco de WhatsApp -->
     <section class="card-creditos-whats">
       <h3>💬 Precisa de Mais Créditos para Ler?</h3>
       <p>Renove seu saldo ou garanta o acesso ilimitado direto pelo WhatsApp!</p>
@@ -564,269 +564,3 @@
     <p>© Ledores e Escrevedores — Algo Mais</p>
     <p>Um projeto para quem ama ler e escrever. 💜</p>
   </footer>
-
-  <!-- Scripts Temáticos -->
-  <script>
-    function atualizarTema() {
-      const agora = new Date();
-      const mes = agora.getMonth() + 1;
-      const dia = agora.getDate();
-
-      const temas = {
-        normal: { classe: "normal", titulo: "💜 Bem-vindo ao nosso mundo literário!", descricao: "Sempre há uma nova história esperando por você.", datas: "", recomendacao: "📚 Leituras para descobrir", introducao: "Explore diferentes estilos e encontre histórias que combinem com você.", itens: ["Contos para ler em momentos tranquilos.", "Romances, aventuras e histórias de imaginação.", "Novos autores e capítulos para descobrir."] },
-        junina: { classe: "junina", titulo: "🎉 Arraiá literário!", descricao: "Bandeirinhas, tradições e histórias para aquecer o coração.", datas: "Tema especial de Festa Junina", recomendacao: "🌽 Histórias para ler no arraiá", introducao: "Entre no clima junino com sugestões de leitura.", itens: ["Contos populares e lendas brasileiras.", "Histórias em pequenas cidades.", "Romances e aventuras tradicionais."] },
-        namorados: { classe: "namorados", titulo: "💕 Especial Dia dos Namorados", descricao: "Uma semana dedicada ao amor e às histórias que aproximam corações.", datas: "De 9 a 14 de junho", recomendacao: "❤️ Leituras para aquecer o coração", introducao: "Que tal escolher uma história de amor para esta semana?", itens: ["Romances com encontros inesperados.", "Histórias de amor e reencontros.", "Contos românticos para compartilhar."] },
-        rosa: { classe: "rosa", titulo: "🎀 Outubro Rosa", descricao: "Um espaço para histórias de coragem, acolhimento e esperança.", datas: "Campanha especial de outubro", recomendacao: "🌷 Histórias de força e esperança", introducao: "Conheça temas literários ligados à empatia, autoestima e superação.", itens: ["Narrativas sobre coragem e recomeços.", "Histórias de amizade e acolhimento.", "Livros sobre superar desafios."] },
-        criancas: { classe: "criancas", titulo: "🧸 Viva a Semana das Crianças!", descricao: "Imaginação, descobertas e aventuras para leitores de todas as idades.", datas: "De 10 a 14 de outubro", recomendacao: "🌈 Um mundo de aventuras", introducao: "Celebre a leitura com histórias escolhidas de acordo com a idade.", itens: ["Contos de fadas e encantados.", "Aventuras e mistérios leves.", "Histórias para incentivar a escrita."] }
-      };
-
-      let tema = temas.normal;
-      if (mes === 6) tema = (dia >= 9 && dia <= 14) ? temas.namorados : temas.junina;
-      else if (mes === 10) tema = (dia >= 10 && dia <= 14) ? temas.criancas : temas.rosa;
-
-      document.body.dataset.theme = tema.classe;
-      document.getElementById("theme-title").textContent = tema.titulo;
-      document.getElementById("theme-description").textContent = tema.descricao;
-      document.getElementById("theme-dates").textContent = tema.datas;
-      document.getElementById("recommendation-title").textContent = tema.recomendacao;
-      document.getElementById("recommendation-intro").textContent = tema.introducao;
-
-      const lista = document.getElementById("recommendation-list");
-      lista.replaceChildren();
-      tema.itens.forEach(item => {
-        const li = document.createElement("li");
-        li.textContent = item;
-        lista.appendChild(li);
-      });
-    }
-    atualizarTema();
-
-    // Reforma Protestante
-    const agoraRef = new Date();
-    const inicioRef = new Date(agoraRef.getFullYear(), 9, 27);
-    const fimRef = new Date(agoraRef.getFullYear(), 9, 31, 23, 59, 59);
-    const secaoReforma = document.getElementById("semana-reforma");
-    if (secaoReforma && agoraRef >= inicioRef && agoraRef <= fimRef) {
-      secaoReforma.style.display = "block";
-    }
-  </script>
-
-  <!-- Script Supabase, Autenticação, Publicação e Capítulos -->
-  <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
-
-    const SUPABASE_URL = 'https://ebpllllnyhztrfgjvomj.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVicGxsbGxueWh6dHJmZ2p2b21qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAzMDgxNDQsImV4cCI6MjA3NTg4NDE0NH0.R8917Peb5L7Hly43P9q6zL8Jk8_x1x1Q1X1X1X1X1X1';
-    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-    // Alternar modo de publicação (Nova Obra / Novo Capítulo)
-    const pubModo = document.getElementById('pub-modo');
-    const formObra = document.getElementById('form-publicar-obra');
-    const formCapitulo = document.getElementById('form-publicar-capitulo');
-
-    pubModo.addEventListener('change', (e) => {
-      if (e.target.value === 'nova-obra') {
-        formObra.style.display = 'block';
-        formCapitulo.style.display = 'none';
-      } else {
-        formObra.style.display = 'none';
-        formCapitulo.style.display = 'block';
-        carregarLivrosParaSelecao();
-      }
-    });
-
-    // Abas de Auth
-    const abaLogin = document.getElementById('aba-login');
-    const abaCadastro = document.getElementById('aba-cadastro');
-    const formLogin = document.getElementById('form-login');
-    const formCadastro = document.getElementById('form-cadastro');
-    const selectTipoConta = document.getElementById('tipo-conta');
-    const campoResponsavel = document.getElementById('campo-responsavel');
-
-    abaLogin.addEventListener('click', () => {
-      abaLogin.classList.add('ativa'); abaCadastro.classList.remove('ativa');
-      formLogin.style.display = 'block'; formCadastro.style.display = 'none';
-    });
-
-    abaCadastro.addEventListener('click', () => {
-      abaCadastro.classList.add('ativa'); abaLogin.classList.remove('ativa');
-      formCadastro.style.display = 'block'; formLogin.style.display = 'none';
-    });
-
-    selectTipoConta.addEventListener('change', (e) => {
-      campoResponsavel.style.display = (e.target.value === 'dependente') ? 'block' : 'none';
-    });
-
-    // Estado do Usuário
-    const usuarioSalvo = JSON.parse(localStorage.getItem('usuario_logado'));
-    if (usuarioSalvo) mostrarAreaLogado(usuarioSalvo);
-
-    function mostrarAreaLogado(u) {
-      document.getElementById('nome-usuario-logado').textContent = u.nome;
-      document.getElementById('tipo-conta-logado').textContent = (u.tipo_conta === 'dependente') ? 'Subconta Familiar' : 'Conta Principal';
-      document.getElementById('saldo-creditos').textContent = u.creditos || 30000;
-      document.getElementById('area-deslogado').style.display = 'none';
-      document.getElementById('area-logado').style.display = 'block';
-    }
-
-    // Login
-    formLogin.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const email = document.getElementById('email-login').value.trim();
-      const senha = document.getElementById('senha-login').value;
-      const msg = document.getElementById('mensagem-login');
-
-      msg.textContent = "Verificando..."; msg.style.color = "#593778";
-      const { data, error } = await supabase.from('usuarios').select('*').eq('email', email).eq('senha', senha).single();
-
-      if (error || !data) {
-        msg.textContent = "E-mail ou senha incorretos."; msg.style.color = "red";
-      } else {
-        msg.textContent = "Login realizado com sucesso!"; msg.style.color = "green";
-        localStorage.setItem('usuario_logado', JSON.stringify(data));
-        setTimeout(() => mostrarAreaLogado(data), 1000);
-      }
-    });
-
-    // Logoff
-    document.getElementById('btn-logoff').addEventListener('click', () => {
-      localStorage.removeItem('usuario_logado');
-      document.getElementById('area-logado').style.display = 'none';
-      document.getElementById('area-deslogado').style.display = 'block';
-      formLogin.reset();
-    });
-
-    // Cadastro
-    formCadastro.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const msg = document.getElementById('mensagem-cadastro');
-      msg.textContent = "Criando conta..."; msg.style.color = '#593778';
-
-      const payload = {
-        nome: document.getElementById('nome-cadastro').value.trim(),
-        cpf: document.getElementById('cpf-cadastro').value.trim(),
-        data_nascimento: document.getElementById('nascimento-cadastro').value,
-        email: document.getElementById('email-cadastro').value.trim(),
-        senha: document.getElementById('senha-cadastro').value,
-        tipo_conta: document.getElementById('tipo-conta').value,
-        cpf_responsavel: document.getElementById('tipo-conta').value === 'dependente' ? document.getElementById('cpf-responsavel').value.trim() : null
-      };
-
-      const { data, error } = await supabase.from('usuarios').insert([payload]).select();
-
-      if (error) {
-        msg.textContent = 'Erro ao cadastrar: ' + error.message; msg.style.color = 'red';
-      } else {
-        msg.textContent = "Cadastro realizado! Faça login."; msg.style.color = 'green';
-        formCadastro.reset();
-        setTimeout(() => abaLogin.click(), 1500);
-      }
-    });
-
-    // Publicar Nova Obra (com Link de Capa opcional)
-    formObra.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const msg = document.getElementById('msg-publicar');
-      msg.textContent = "Publicando sua história..."; msg.style.color = "#593778";
-
-      const capaUrlInput = document.getElementById('pub-capa-url').value.trim();
-      const capaFinal = capaUrlInput || 'https://via.placeholder.com/200x280?text=Sem+Capa';
-
-      const payloadObra = {
-        titulo: document.getElementById('pub-titulo').value.trim(),
-        autor: document.getElementById('pub-autor').value.trim(),
-        categoria: document.getElementById('pub-categoria').value,
-        genero: document.getElementById('pub-genero').value.trim() || 'Geral',
-        capa_url: capaFinal,
-        sinopse: document.getElementById('pub-sinopse').value.trim(),
-        conteudo: document.getElementById('pub-conteudo').value.trim()
-      };
-
-      const { data, error } = await supabase.from('livros').insert([payloadObra]).select();
-
-      if (error) {
-        msg.textContent = "Erro ao publicar: " + error.message; msg.style.color = "red";
-      } else {
-        msg.textContent = "🎉 Obra publicada com sucesso no site!"; msg.style.color = "green";
-        formObra.reset();
-        carregarObras();
-      }
-    });
-
-    // Carregar Obras Existentes no Select
-    async function carregarLivrosParaSelecao() {
-      const select = document.getElementById('select-obra-existente');
-      select.innerHTML = '<option value="">Carregando suas obras...</option>';
-      const { data } = await supabase.from('livros').select('id, titulo');
-
-      if (data && data.length > 0) {
-        select.innerHTML = '<option value="">Selecione uma obra...</option>';
-        data.forEach(item => {
-          select.innerHTML += `<option value="${item.id}">${item.titulo}</option>`;
-        });
-      } else {
-        select.innerHTML = '<option value="">Nenhuma obra encontrada</option>';
-      }
-    }
-
-    // Publicar Novo Capítulo
-    formCapitulo.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const msg = document.getElementById('msg-capitulo');
-      const livroId = document.getElementById('select-obra-existente').value;
-      const tituloCap = document.getElementById('cap-titulo').value.trim();
-      const conteudoCap = document.getElementById('cap-conteudo').value.trim();
-
-      if (!livroId) {
-        msg.textContent = "Selecione uma obra válida."; msg.style.color = "red";
-        return;
-      }
-
-      msg.textContent = "Anexando capítulo..."; msg.style.color = "#593778";
-
-      const { data: livro } = await supabase.from('livros').select('conteudo').eq('id', livroId).single();
-
-      if (livro) {
-        const conteudoAtualizado = livro.conteudo + `\n\n---\n### 📖 ${tituloCap}\n\n` + conteudoCap;
-
-        const { error } = await supabase.from('livros').update({ conteudo: conteudoAtualizado }).eq('id', livroId);
-
-        if (error) {
-          msg.textContent = "Erro ao adicionar capítulo: " + error.message; msg.style.color = "red";
-        } else {
-          msg.textContent = "📖 Capítulo adicionado com sucesso!"; msg.style.color = "green";
-          formCapitulo.reset();
-          carregarObras();
-        }
-      }
-    });
-
-    // Carregar Obras do Supabase
-    async function carregarObras() {
-      const container = document.getElementById('lista-obras');
-      const { data, error } = await supabase.from('livros').select('*').order('created_at', { ascending: false });
-
-      if (error || !data || data.length === 0) {
-        container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #777;">Nenhuma obra publicada ainda. Seja o primeiro a escrever!</p>';
-        return;
-      }
-
-      container.innerHTML = '';
-      data.forEach(item => {
-        const div = document.createElement('div');
-        div.className = 'obra-item';
-        div.innerHTML = `
-          <img src="${item.capa_url || 'https://via.placeholder.com/200x280?text=Sem+Capa'}" alt="Capa">
-          <span class="tag-categoria">${item.categoria || 'Livro'} • ${item.genero || 'Geral'}</span>
-          <h4>${item.titulo}</h4>
-          <div class="autor">Por: ${item.autor}</div>
-          <p style="font-size: 12px; color: #555;">${item.sinopse ? item.sinopse.substring(0, 70) + '...' : ''}</p>
-        `;
-        container.appendChild(div);
-      });
-    }
-
-    carregarObras();
-  </script>
-</body>
-</html>
