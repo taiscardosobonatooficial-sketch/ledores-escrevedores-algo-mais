@@ -204,7 +204,7 @@
  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
 const SUPABASE_URL = 'https://lytfzyaxtzwkycvusod.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_iAK7hj6ici39OQYBSgLEbA_gI9EMpMY';
+const SUPABASE_ANON_KEY = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx5dGZ5enlheHR6d2t5Y3Z1c29kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI0NjI4NDAsImV4cCI6MjEwODAzODg0MH0.8J0_9kJOSxCYWniknIatFy2aNE_uX_f7UX1CrQolS3c
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
   auth: { persistSession: true, autoRefreshToken: true }
 });
