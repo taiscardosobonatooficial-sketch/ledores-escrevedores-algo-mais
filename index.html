@@ -451,8 +451,8 @@
           </div>
         </div>
 
-        <label><strong>Capa da Obra (Selecione o arquivo da foto):</strong></label><br>
-        <input type="file" id="pub-capa-file" accept="image/*" style="width: 100%; padding: 10px; margin: 8px 0 16px; border: 1px solid var(--borda); border-radius: 6px; background: #fff;"><br>
+        <label><strong>Link / URL da Capa (Imagem do Pinterest / Web):</strong></label><br>
+        <input type="url" id="pub-capa-url" placeholder="https://exemplo.com/imagem.jpg" style="width: 100%; padding: 10px; margin: 8px 0 16px; border: 1px solid var(--borda); border-radius: 6px;"><br>
 
         <label><strong>Sinopse / Resumo:</strong></label><br>
         <textarea id="pub-sinopse" rows="3" placeholder="Resumo do livro ou diário..." style="width: 100%; padding: 10px; margin: 8px 0 16px; border: 1px solid var(--borda); border-radius: 6px;"></textarea><br>
@@ -723,44 +723,21 @@
       }
     });
 
-    // Publicar Nova Obra (Com Upload de Imagem)
+    // Publicar Nova Obra (com Link de Capa opcional)
     formObra.addEventListener('submit', async (e) => {
       e.preventDefault();
       const msg = document.getElementById('msg-publicar');
       msg.textContent = "Publicando sua história..."; msg.style.color = "#593778";
 
-      let capaUrl = 'https://via.placeholder.com/200x280?text=Sem+Capa';
-      const fileInput = document.getElementById('pub-capa-file');
-
-      if (fileInput.files.length > 0) {
-        const file = fileInput.files[0];
-        const fileName = `${Date.now()}_${file.name}`;
-
-        const { data: uploadData, error: uploadError } = await supabase
-          .storage
-          .from('capas')
-          .upload(fileName, file);
-
-        if (uploadError) {
-          msg.textContent = "Erro ao enviar imagem da capa: " + uploadError.message;
-          msg.style.color = "red";
-          return;
-        }
-
-        const { data: publicUrlData } = supabase
-          .storage
-          .from('capas')
-          .getPublicUrl(fileName);
-
-        capaUrl = publicUrlData.publicUrl;
-      }
+      const capaUrlInput = document.getElementById('pub-capa-url').value.trim();
+      const capaFinal = capaUrlInput || 'https://via.placeholder.com/200x280?text=Sem+Capa';
 
       const payloadObra = {
         titulo: document.getElementById('pub-titulo').value.trim(),
         autor: document.getElementById('pub-autor').value.trim(),
         categoria: document.getElementById('pub-categoria').value,
         genero: document.getElementById('pub-genero').value.trim() || 'Geral',
-        capa_url: capaUrl,
+        capa_url: capaFinal,
         sinopse: document.getElementById('pub-sinopse').value.trim(),
         conteudo: document.getElementById('pub-conteudo').value.trim()
       };
