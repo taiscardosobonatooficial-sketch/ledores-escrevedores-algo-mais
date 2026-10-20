@@ -35,9 +35,6 @@
       text-decoration: none;
       font-weight: bold;
     }
-    nav a:hover {
-      text-decoration: underline;
-    }
     .banner-rosa {
       background-color: var(--principal-claro);
       border: 2px dashed var(--principal);
@@ -90,15 +87,12 @@
       background-color: var(--principal);
       color: white;
       border: none;
-      padding: 8px;
+      padding: 10px;
       border-radius: 4px;
       cursor: pointer;
       width: 100%;
       margin-top: 10px;
       font-weight: bold;
-    }
-    .btn-acao:hover {
-      opacity: 0.9;
     }
     .modal {
       display: none;
@@ -113,41 +107,14 @@
       background: white;
       padding: 25px;
       border-radius: 8px;
-      width: 400px;
+      width: 600px;
       max-width: 90%;
       max-height: 90vh;
       overflow-y: auto;
     }
-    .user-bar {
-      background: #ad1457;
-      color: white;
-      padding: 8px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 14px;
-    }
-    .user-bar button {
-      background: white;
-      color: var(--principal);
-      border: none;
-      padding: 4px 10px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-weight: bold;
-    }
   </style>
 </head>
 <body>
-
-  <div class="user-bar">
-    <span id="user-info">👤 A carregar utilizador...</span>
-    <div>
-      <button id="btn-login-modal" onclick="abrirModalAuth('login')">Entrar</button>
-      <button id="btn-cadastro-modal" onclick="abrirModalAuth('cadastro')">Cadastrar</button>
-      <button id="btn-logout" onclick="fazerLogout()" style="display:none;">Sair</button>
-    </div>
-  </div>
 
   <header>
     <h1>📚 Ledores e Escrevedores</h1>
@@ -166,17 +133,8 @@
 
   <div class="container" id="acervo">
     <h2>📖 Estantes de Obras</h2>
-    <p>Selecione uma estante para filtrar o tipo de publicação:</p>
-    <div style="display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px;">
-      <button class="btn-estante" onclick="filtrarEstante('todas', this)" style="background:var(--principal); color:white; border:none; padding:8px 15px; border-radius:20px; cursor:pointer;">Todas as Obras</button>
-      <button class="btn-estante" onclick="filtrarEstante('Livro', this)" style="background:#eee; border:none; padding:8px 15px; border-radius:20px; cursor:pointer;">Livros</button>
-      <button class="btn-estante" onclick="filtrarEstante('Diario', this)" style="background:#eee; border:none; padding:8px 15px; border-radius:20px; cursor:pointer;">Diários</button>
-      <button class="btn-estante" onclick="filtrarEstante('Jornal', this)" style="background:#eee; border:none; padding:8px 15px; border-radius:20px; cursor:pointer;">Jornais / Revistas</button>
-      <button class="btn-estante" onclick="filtrarEstante('Redacao', this)" style="background:#eee; border:none; padding:8px 15px; border-radius:20px; cursor:pointer;">Redações</button>
-    </div>
-
     <div class="grid-obras" id="lista-obras">
-      <p style="grid-column: 1/-1; text-align: center;">A carregar acervo...</p>
+      <p style="grid-column: 1/-1; text-align: center;">A carregar acervo do Firebase...</p>
     </div>
   </div>
 
@@ -194,95 +152,55 @@
       </select>
 
       <input type="text" id="pub-genero" placeholder="Gênero (ex: Romance, Poesia, Superação)" required style="padding: 10px;">
-      <textarea id="pub-sinopse" placeholder="Sinopse curta..." rows="3" style="padding: 10px;"></textarea>
+      <input type="text" id="pub-capa-url" placeholder="Link da Imagem da Capa (URL ex: https://...)" style="padding: 10px;">
       <textarea id="pub-conteudo" placeholder="Conteúdo completo da obra..." rows="6" required style="padding: 10px;"></textarea>
       
-      <label style="font-size: 13px; font-weight: bold;">Capa da Obra (Imagem):</label>
-      <input type="file" id="pub-capa-file" accept="image/*" style="padding: 5px;">
-
       <button type="submit" class="btn-acao">Publicar na Estante</button>
       <p id="msg-pub" style="font-weight: bold; text-align: center;"></p>
     </form>
   </div>
 
-  <!-- MODAL DE LOGIN / CADASTRO -->
-  <div id="modal-auth" class="modal">
-    <div class="modal-conteudo">
-      <h3 id="auth-titulo" style="color: var(--principal); margin-top:0;">Entrar na Conta</h3>
-      <form id="form-auth" style="display: flex; flex-direction: column; gap: 10px;">
-        
-        <div id="campos-cadastro-extra" style="display: none; background: #fff5f8; padding: 10px; border-radius: 6px; border: 1px solid #f8bbd0;">
-          <input type="text" id="cad-nome" placeholder="Nome Completo" style="width: 100%; margin-bottom: 8px; padding: 8px; box-sizing: border-box;">
-          <input type="text" id="cad-cpf" placeholder="CPF (Somente números)" style="width: 100%; margin-bottom: 8px; padding: 8px; box-sizing: border-box;">
-          <input type="tel" id="cad-telefone" placeholder="Telefone / WhatsApp" style="width: 100%; margin-bottom: 8px; padding: 8px; box-sizing: border-box;">
-          
-          <label style="font-size: 12px; font-weight: bold; display: block; margin-top: 4px;">Tipo de Conta:</label>
-          <select id="cad-tipo" style="width: 100%; margin-bottom: 8px; padding: 8px;">
-            <option value="leitor">Leitor(a)</option>
-            <option value="escritor">Escritor(a)</option>
-            <option value="ambos">Ambos</option>
-          </select>
-        </div>
-
-        <input type="email" id="auth-email" placeholder="E-mail" required style="padding: 10px;">
-        <input type="password" id="auth-senha" placeholder="Senha" required style="padding: 10px;">
-        
-        <button type="submit" id="btn-auth-submit" class="btn-acao">Entrar</button>
-        <p id="auth-msg" style="font-size: 13px; text-align: center; margin: 5px 0;"></p>
-        <button type="button" onclick="document.getElementById('modal-auth').style.display='none'" style="background:none; border:none; color:#777; cursor:pointer; margin-top:5px;">Fechar</button>
-      </form>
-    </div>
-  </div>
-
   <!-- MODAL DE LEITURA -->
   <div id="modal-leitura" class="modal">
-    <div class="modal-conteudo" style="width: 700px; max-width: 95%;">
+    <div class="modal-conteudo">
       <span id="read-tag" class="tag">Categoria</span>
       <h2 id="read-titulo" style="color: var(--principal); margin: 10px 0;">Título</h2>
       <p id="read-autor" style="font-style: italic; color: #555; margin-bottom: 15px;"></p>
       <hr style="border: 0; border-top: 1px solid #ddd; margin-bottom: 15px;">
-      <div id="read-conteudo" style="white-space: pre-wrap; line-height: 1.6; max-height: 50vh; overflow-y: auto; padding-right: 10px;"></div>
+      <div id="read-conteudo" style="white-space: pre-wrap; line-height: 1.6; max-height: 50vh; overflow-y: auto;"></div>
       <button onclick="document.getElementById('modal-leitura').style.display='none'" class="btn-acao" style="margin-top: 20px;">Fechar Leitura</button>
     </div>
   </div>
 
-  <!-- SUPABASE E LÓGICA -->
+  <!-- FIREBASE SCRIPTS -->
   <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    const SUPABASE_URL = 'https://lytfzyaxtzwkycvusod.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx5dGZ5enlheHR6d2t5Y3Z1c29kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI0NjI4NDAsImV4cCI6MjEwODAzODg0MH0.8J0_9kJOSxCYWniknIatFy2aNE_uX_f7UX1CrQolS3c';
-    
-    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const firebaseConfig = {
+      apiKey: "AIzaSyDuJpZ09ofLYD7NjCNkJiC-WoB66qKAvMU",
+      authDomain: "ledores-escrevedores-algo-mais.firebaseapp.com",
+      projectId: "ledores-escrevedores-algo-mais",
+      storageBucket: "ledores-escrevedores-algo-mais.appspot.com",
+      messagingSenderId: "175218660400",
+      appId: "1:175218660400:web:53d5029c1cecf8eee649f5"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
     let obrasCache = [];
-
-    async function verificarUsuario() {
-      const userInfo = document.getElementById('user-info');
-      try {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (!session) {
-          userInfo.textContent = '👤 Visitante';
-          return;
-        }
-        userInfo.textContent = `👤 ${session.user.email}`;
-      } catch (e) {
-        userInfo.textContent = '👤 Visitante';
-      }
-    }
 
     async function carregarObras() {
       const container = document.getElementById('lista-obras');
-      if (!container) return;
-
       try {
-        const { data, error } = await supabase.from('livros').select('*').order('id', { ascending: false });
+        const q = query(collection(db, "livros"));
+        const querySnapshot = await getDocs(q);
+        
+        obrasCache = [];
+        querySnapshot.forEach((doc) => {
+          obrasCache.push({ id: doc.id, ...doc.data() });
+        });
 
-        if (error) {
-          container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: red;">Erro: ${error.message}</p>`;
-          return;
-        }
-
-        obrasCache = data || [];
         if (obrasCache.length === 0) {
           container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #777;">Nenhuma obra cadastrada ainda. Seja o primeiro a publicar abaixo!</p>';
           return;
@@ -299,16 +217,17 @@
               <h3 style="margin: 6px 0; color: var(--principal); font-size: 16px;">${obra.titulo}</h3>
               <p style="font-size: 12px; color: #666; font-style: italic;">Por ${obra.autor}</p>
             </div>
-            <button class="btn-acao" onclick="abrirLeitor(${obra.id})">📖 Ler Obra</button>
+            <button class="btn-acao" onclick="abrirLeitor('${obra.id}')">📖 Ler Obra</button>
           `;
           container.appendChild(item);
         });
       } catch (e) {
-        container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: red;">Erro ao carregar acervo.</p>`;
+        console.error(e);
+        container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: red;">Erro ao carregar acervo do Firebase: ${e.message}</p>`;
       }
     }
 
-    window.abrirLeitor = async function(id) {
+    window.abrirLeitor = function(id) {
       const obra = obrasCache.find(o => o.id === id);
       if (!obra) return;
       document.getElementById('read-tag').textContent = `${obra.categoria} • ${obra.genero}`;
@@ -318,63 +237,35 @@
       document.getElementById('modal-leitura').style.display = 'flex';
     };
 
-    window.abrirModalAuth = function(tipo) {
-      document.getElementById('modal-auth').style.display = 'flex';
-      const extra = document.getElementById('campos-cadastro-extra');
-      if (tipo === 'cadastro') {
-        document.getElementById('auth-titulo').textContent = 'Criar Conta';
-        if (extra) extra.style.display = 'block';
-      } else {
-        document.getElementById('auth-titulo').textContent = 'Entrar';
-        if (extra) extra.style.display = 'none';
-      }
-    };
-
     const formPub = document.getElementById('form-publicar');
-    if (formPub) {
-      formPub.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const msg = document.getElementById('msg-pub');
-        msg.textContent = "A publicar obra..."; 
+    formPub.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const msg = document.getElementById('msg-pub');
+      msg.textContent = "A publicar no Firebase..."; 
 
-        let capaUrl = 'https://via.placeholder.com/200x280?text=Sem+Capa';
-        const fileInput = document.getElementById('pub-capa-file');
-
-        if (fileInput && fileInput.files.length > 0) {
-          const file = fileInput.files[0];
-          const fileName = `${Date.now()}_${file.name}`;
-          const { error: uploadError } = await supabase.storage.from('capas').upload(fileName, file);
-          if (!uploadError) {
-            const { data: urlData } = supabase.storage.from('capas').getPublicUrl(fileName);
-            capaUrl = urlData.publicUrl;
-          }
-        }
-
+      try {
         const novaObra = {
           titulo: document.getElementById('pub-titulo').value.trim(),
           autor: document.getElementById('pub-autor').value.trim(),
           categoria: document.getElementById('pub-categoria').value,
           genero: document.getElementById('pub-genero').value,
-          sinopse: document.getElementById('pub-sinopse').value.trim(),
           conteudo: document.getElementById('pub-conteudo').value.trim(),
-          capa_url: capaUrl
+          capa_url: document.getElementById('pub-capa-url').value.trim() || 'https://via.placeholder.com/200x280?text=Sem+Capa',
+          criado_em: new Date()
         };
 
-        const { error } = await supabase.from('livros').insert([novaObra]);
+        await addDoc(collection(db, "livros"), novaObra);
 
-        if (error) {
-          msg.textContent = "Erro ao publicar: " + error.message; 
-          msg.style.color = "red";
-        } else {
-          msg.textContent = "🎉 Publicado com sucesso!"; 
-          msg.style.color = "green";
-          formPub.reset();
-          carregarObras();
-        }
-      });
-    }
+        msg.textContent = "🎉 Publicado com sucesso!"; 
+        msg.style.color = "green";
+        formPub.reset();
+        carregarObras();
+      } catch (e) {
+        msg.textContent = "Erro ao publicar: " + e.message;
+        msg.style.color = "red";
+      }
+    });
 
-    verificarUsuario();
     carregarObras();
   </script>
 </body>
