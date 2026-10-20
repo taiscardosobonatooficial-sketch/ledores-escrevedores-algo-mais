@@ -203,33 +203,41 @@
   <script type="module">
  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
-const SUPABASE_URL = 'https://lytfzyaxtzwkycvusod.supabase.co';
-const SUPABASE_ANON_KEY = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx5dGZ5enlheHR6d2t5Y3Z1c29kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI0NjI4NDAsImV4cCI6MjEwODAzODg0MH0.8J0_9kJOSxCYWniknIatFy2aNE_uX_f7UX1CrQolS3c
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-  auth: { persistSession: true, autoRefreshToken: true }
-});
+<!-- Lógica JavaScript + Supabase -->
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
-let obrasCache = [];
+    const SUPABASE_URL = 'https://lytfzyaxtzwkycvusod.supabase.co';
+    // Cole aqui a chave anon que começa com eyJ...
+    const SUPABASE_ANON_KEY =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx5dGZ5enlheHR6d2t5Y3Z1c29kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI0NjI4NDAsImV4cCI6MjEwODAzODg0MH0.8J0_9kJOSxCYWniknIatFy2aNE_uX_f7UX1CrQolS3c
+
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    let obrasCache = [];
     let modoAuth = 'login';
 
-    // 1. Controle de Usuários (Login / Cadastro / Logout)
+    // 1. Controle de Usuários
     async function verificarUsuario() {
-      const { data: { user } } = await supabase.auth.getUser();
-      const userInfo = document.getElementById('user-info');
-      const btnLogin = document.getElementById('btn-login-modal');
-      const btnCad = document.getElementById('btn-cadastro-modal');
-      const btnLogout = document.getElementById('btn-logout');
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        const userInfo = document.getElementById('user-info');
+        const btnLogin = document.getElementById('btn-login-modal');
+        const btnCad = document.getElementById('btn-cadastro-modal');
+        const btnLogout = document.getElementById('btn-logout');
 
-      if (user) {
-        userInfo.textContent = `👤 ${user.email}`;
-        btnLogin.style.display = 'none';
-        btnCad.style.display = 'none';
-        btnLogout.style.display = 'inline-block';
-      } else {
-        userInfo.textContent = '👤 Visitante (Não conectado)';
-        btnLogin.style.display = 'inline-block';
-        btnCad.style.display = 'inline-block';
-        btnLogout.style.display = 'none';
+        if (user) {
+          userInfo.textContent = `👤 ${user.email}`;
+          btnLogin.style.display = 'none';
+          btnCad.style.display = 'none';
+          btnLogout.style.display = 'inline-block';
+        } else {
+          userInfo.textContent = '👤 Visitante (Não conectado)';
+          btnLogin.style.display = 'inline-block';
+          btnCad.style.display = 'inline-block';
+          btnLogout.style.display = 'none';
+        }
+      } catch (err) {
+        console.log("Aguardando login:", err);
       }
     }
 
@@ -271,15 +279,19 @@ let obrasCache = [];
     // 2. Carregar Obras e Filtro por Estante
     async function carregarObras() {
       const container = document.getElementById('lista-obras');
-      const { data, error } = await supabase.from('livros').select('*').order('id', { ascending: false });
+      try {
+        const { data, error } = await supabase.from('livros').select('*').order('id', { ascending: false });
 
-      if (error) {
-        container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: red;">Erro ao carregar: ${error.message}</p>`;
-        return;
+        if (error) {
+          container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: red;">Erro ao carregar: ${error.message}</p>`;
+          return;
+        }
+
+        obrasCache = data || [];
+        renderizarObras(obrasCache);
+      } catch (e) {
+        container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: red;">Erro ao conectar ao banco de dados: ${e.message}</p>`;
       }
-
-      obrasCache = data || [];
-      renderizarObras(obrasCache);
     }
 
     function renderizarObras(lista) {
@@ -373,6 +385,7 @@ let obrasCache = [];
 
     verificarUsuario();
     carregarObras();
+  </script>
   </script>
 </body>
 </html>
