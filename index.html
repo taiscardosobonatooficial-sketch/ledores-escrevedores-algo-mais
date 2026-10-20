@@ -181,6 +181,11 @@
       border-radius: 12px;
       padding: 15px;
       text-align: center;
+      transition: transform 0.2s;
+    }
+
+    .obra-item:hover {
+      transform: translateY(-3px);
     }
 
     .obra-item img {
@@ -293,6 +298,75 @@
     }
 
     .btn-whats:hover { filter: brightness(1.05); }
+
+    /* Modal de Leitura */
+    .modal-leitura {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .modal-conteudo {
+      background: var(--cartao);
+      width: 100%;
+      max-width: 750px;
+      max-height: 85vh;
+      border-radius: 16px;
+      padding: 25px;
+      overflow-y: auto;
+      position: relative;
+      box-shadow: 0 5px 25px rgba(0,0,0,0.3);
+    }
+
+    .fechar-modal {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      font-size: 24px;
+      font-weight: bold;
+      cursor: pointer;
+      color: var(--texto);
+    }
+
+    .lista-capitulos-botoes {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 15px 0;
+    }
+
+    .btn-capitulo-aba {
+      background: #f0e8f5;
+      border: 1px solid var(--borda);
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    .btn-capitulo-aba.ativo {
+      background: var(--principal);
+      color: white;
+    }
+
+    .texto-capitulo {
+      line-height: 1.8;
+      white-space: pre-wrap;
+      font-size: 16px;
+      background: #fcfbfe;
+      padding: 15px;
+      border-radius: 8px;
+      border: 1px solid var(--borda);
+    }
 
     /* Temas comemorativos */
     body[data-theme="junina"] {
@@ -552,6 +626,27 @@
         📱 Comprar Créditos pelo WhatsApp
       </a>
     </section>
+
+    <!-- Modal de Leitura de Obras e Capítulos -->
+    <div id="modal-leitura" class="modal-leitura">
+      <div class="modal-conteudo">
+        <span id="fechar-modal" class="fechar-modal">&times;</span>
+        <h2 id="modal-titulo-obra" style="color: var(--principal); margin-top: 0;"></h2>
+        <p id="modal-autor-obra" style="font-weight: bold; color: #666;"></p>
+        <p id="modal-sinopse-obra" style="font-style: italic; color: #444;"></p>
+
+        <hr style="border: 0; border-top: 1px solid var(--borda); margin: 20px 0;">
+
+        <h3>📖 Capítulos</h3>
+        <div id="modal-lista-capitulos" class="lista-capitulos-botoes">
+          <!-- Botões dos capítulos gerados via JS -->
+        </div>
+
+        <div id="modal-conteudo-capitulo" class="texto-capitulo">
+          Selecione um capítulo acima para ler.
+        </div>
+      </div>
+    </div>
   </main>
 
   <footer>
@@ -578,7 +673,6 @@
       if (mes === 6) {
         tema = (dia >= 9 && dia <= 14) ? temas.namorados : temas.junina;
       } else if (mes === 10) {
-        // Semana das crianças de 10 a 14, nos demais dias de outubro fica rosa
         if (dia >= 10 && dia <= 14) {
           tema = temas.criancas;
         } else {
@@ -603,7 +697,7 @@
     }
     atualizarTema();
 
-    // Reforma Protestante (Ajustada para 25 a 31 de outubro)
+    // Reforma Protestante (25 a 31 de outubro)
     const agoraRef = new Date();
     const inicioRef = new Date(agoraRef.getFullYear(), 9, 25);
     const fimRef = new Date(agoraRef.getFullYear(), 9, 31, 23, 59, 59);
@@ -613,8 +707,8 @@
     }
   </script>
 
-  <!-- Script Supabase, Autenticação, Publicação e Capítulos -->
- <script type="module">
+  <!-- Script Supabase, Autenticação, Publicação e Modal de Leitura -->
+  <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
     const SUPABASE_URL = 'https://ebpllllnyhztrfgjvomj.supabase.co';
@@ -725,92 +819,4 @@
       msg.textContent = "Publicando sua história..."; msg.style.color = "#593778";
 
       let capaUrl = 'https://via.placeholder.com/200x280?text=Sem+Capa';
-      const fileInput = document.getElementById('pub-capa-file');
-
-      if (fileInput.files.length > 0) {
-        const file = fileInput.files[0];
-        const fileName = `${Date.now()}_${file.name}`;
-
-        const { data: uploadData, error: uploadError } = await supabase
-          .storage
-          .from('capas')
-          .upload(fileName, file);
-
-        if (uploadError) {
-          msg.textContent = "Erro ao enviar imagem da capa: " + uploadError.message;
-          msg.style.color = "red";
-          return;
-        }
-
-        const { data: publicUrlData } = supabase
-          .storage
-          .from('capas')
-          .getPublicUrl(fileName);
-
-        capaUrl = publicUrlData.publicUrl;
-      }
-
-      const payloadObra = {
-        titulo: document.getElementById('pub-titulo').value.trim(),
-        autor: document.getElementById('pub-autor').value.trim(),
-        categoria: document.getElementById('pub-categoria').value,
-        genero: document.getElementById('pub-genero').value.trim() || 'Geral',
-        capa_url: capaUrl,
-        sinopse: document.getElementById('pub-sinopse').value.trim(),
-        conteudo: document.getElementById('pub-conteudo').value.trim()
-      };
-
-      const { data, error } = await supabase.from('livros').insert([payloadObra]).select();
-
-      if (error) {
-        msg.textContent = "Erro ao publicar: " + error.message; msg.style.color = "red";
-      } else {
-        msg.textContent = "🎉 Obra publicada com sucesso no site!"; msg.style.color = "green";
-        formObra.reset();
-        carregarObras();
-      }
-    });
-
-    async function carregarLivrosParaSelecao() {
-      const select = document.getElementById('select-obra-existente');
-      select.innerHTML = '<option value="">Carregando suas obras...</option>';
-      const { data } = await supabase.from('livros').select('id, titulo');
-
-      if (data && data.length > 0) {
-        select.innerHTML = '<option value="">Selecione uma obra...</option>';
-        data.forEach(item => {
-          select.innerHTML += `<option value="${item.id}">${item.titulo}</option>`;
-        });
-      } else {
-        select.innerHTML = '<option value="">Nenhuma obra encontrada</option>';
-      }
-    }
-
-    async function carregarObras() {
-      const container = document.getElementById('lista-obras');
-      const { data, error } = await supabase.from('livros').select('*').order('created_at', { ascending: false });
-
-      if (error || !data || data.length === 0) {
-        container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #777;">Nenhuma obra publicada ainda. Seja o primeiro a escrever!</p>';
-        return;
-      }
-
-      container.innerHTML = '';
-      data.forEach(item => {
-        const div = document.createElement('div');
-        div.className = 'obra-item';
-        div.innerHTML = `
-          <img src="${item.capa_url || 'https://via.placeholder.com/200x280?text=Sem+Capa'}" alt="Capa">
-          <span class="tag-categoria">${item.categoria || 'Livro'} • ${item.genero || 'Geral'}</span>
-          <h4>${item.titulo}</h4>
-          <div class="autor">Por: ${item.autor}</div>
-          <p style="font-size: 12px; color: #555;">${item.sinopse ? item.sinopse.substring(0, 70) + '...' : ''}</p>
-        `;
-        container.appendChild(div);
-      });
-    }
-
-    carregarObras();
-  </script>
-</body>
-</html>
+      const fileInput = document.getElementById('
