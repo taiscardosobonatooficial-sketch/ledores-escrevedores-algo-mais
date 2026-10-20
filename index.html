@@ -267,7 +267,6 @@
     const SUPABASE_URL = 'https://lytfzyaxtzwkycvusod.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx5dGZ5enlheHR6d2t5Y3Z1c29kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI0NjI4NDAsImV4cCI6MjEwODAzODg0MH0.8J0_9kJOSxCYWniknIatFy2aNE_uX_f7UX1CrQolS3c';
     
-    // Configuração com fetch explícito para evitar erros de rede no Netlify
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
       auth: { persistSession: true, autoRefreshToken: true }
     });
@@ -297,7 +296,7 @@
                 return;
               }
             }
-            userInfo.textContent = `👤 ${perfil.nome} (${perfil.tipo_usuario.toUpperCase()})`;
+            userInfo.textContent = `👤 ${perfil.nome || user.email} (${(perfil.tipo_usuario || 'comum').toUpperCase()})`;
           } else {
             userInfo.textContent = `👤 ${user.email}`;
           }
@@ -316,7 +315,7 @@
       }
     }
 
-  // Modal de Autenticação (Alternar entre Login e Cadastro)
+    // Modal de Autenticação (Alternar entre Login e Cadastro)
     window.abrirModalAuth = function(tipo) {
       document.getElementById('modal-auth').style.display = 'flex';
       const containerCadastro = document.getElementById('campos-cadastro-extra');
@@ -334,6 +333,7 @@
       }
     };
 
+    // Form de Autenticação Único e Corrigido
     document.getElementById('form-auth').addEventListener('submit', async (e) => {
       e.preventDefault();
       const email = document.getElementById('auth-email').value.trim();
@@ -346,25 +346,30 @@
       const ehCadastro = document.getElementById('campos-cadastro-extra') && 
                          document.getElementById('campos-cadastro-extra').style.display !== 'none';
 
-      if (ehCadastro) {
-        const nome = document.getElementById('cad-nome').value.trim();
-        const cpf = document.getElementById('cad-cpf').value.trim();
-        const telefone = document.getElementById('cad-telefone').value.trim();
-        const tipo_usuario = document.getElementById('cad-tipo').value;
-        const modalidade = document.getElementById('cad-modalidade').value;
+      try {
+        if (ehCadastro) {
+          const nome = document.getElementById('cad-nome').value.trim();
+          const cpf = document.getElementById('cad-cpf').value.trim();
+          const telefone = document.getElementById('cad-telefone').value.trim();
+          const tipo_usuario = document.getElementById('cad-tipo').value;
+          const modalidade = document.getElementById('cad-modalidade').value;
 
-        if (!nome || !cpf || !telefone) {
-          msg.textContent = 'Por favor, preencha Nome, CPF e Telefone.';
-          msg.style.color = 'red';
-          return;
-        }
+          if (!nome || !cpf || !telefone) {
+            msg.textContent = 'Por favor, preencha Nome, CPF e Telefone.';
+            msg.style.color = 'red';
+            return;
+          }
 
-        try {
-          // 1. Criar o usuário no Supabase Auth
-          const { data: authData, error: authError } = await supabase.auth.signUp({ 
-            email: email, 
-            password: password 
-          });
+          // Checa se CPF já está banido
+          const { data: cpfBanido } = await supabase.from('cpfs_banidos').select('*').eq('cpf', cpf).maybeSingle();
+          if (cpfBanido) {
+            msg.textContent = 'Este CPF está permanentemente BANIDO por descumprimento das regras.';
+            msg.style.color = 'red';
+            return;
+          }
+
+          // 1. Criar utilizador
+          const { data: authData, error: authError } = await supabase.auth.signUp({ email, password });
           
           if (authError) {
             msg.textContent = 'Erro no registo: ' + authError.message; 
@@ -373,7 +378,7 @@
           }
 
           if (authData?.user) {
-            // 2. Registar o perfil associado com upsert para evitar bloqueios
+            // 2. Salvar Perfil
             const { error: profileError } = await supabase.from('profiles').upsert([{
               id: authData.user.id,
               nome: nome,
@@ -398,12 +403,8 @@
               }, 1200);
             }
           }
-        } catch (err) {
-          msg.textContent = 'Erro de ligação: ' + (err.message || 'Verifique a ligação');
-          msg.style.color = 'red';
-        }
-      } else {
-        try {
+        } else {
+          // Login
           const { error } = await supabase.auth.signInWithPassword({ email, password });
           if (error) {
             msg.textContent = 'Erro ao entrar: ' + error.message; 
@@ -412,65 +413,10 @@
             document.getElementById('modal-auth').style.display = 'none';
             verificarUsuario();
           }
-        } catch (err) {
-          msg.textContent = 'Erro ao entrar: ' + err.message;
-          msg.style.color = 'red';
-       }
-      }
-    });
-          return;
         }
-
-        // Verifica se o CPF está banido
-        const { data: cpfBanido } = await supabase.from('cpfs_banidos').select('*').eq('cpf', cpf).single();
-        if (cpfBanido) {
-          msg.textContent = 'Este CPF está permanentemente BANIDO por descumprimento das regras.';
-          msg.style.color = 'red';
-          return;
-        }
-
-        const { data: authData, error: authError } = await supabase.auth.signUp({ email, password });
-        
-        if (authError) {
-          msg.textContent = authError.message; 
-          msg.style.color = 'red';
-          return;
-        }
-
-        if (authData.user) {
-          const { error: profileError } = await supabase.from('profiles').insert([{
-            id: authData.user.id,
-            nome,
-            email,
-            cpf,
-            telefone,
-            tipo_usuario,
-            modalidade,
-            strikes: 0,
-            status_conta: 'ativo'
-          }]);
-
-          if (profileError) {
-            msg.textContent = "Erro ao gravar perfil: " + profileError.message;
-            msg.style.color = 'red';
-          } else {
-            msg.textContent = '🎉 Conta criada com sucesso!';
-            msg.style.color = 'green';
-            setTimeout(() => {
-              document.getElementById('modal-auth').style.display = 'none';
-              verificarUsuario();
-            }, 1500);
-          }
-        }
-      } else {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) {
-          msg.textContent = 'Erro ao entrar: ' + error.message; 
-          msg.style.color = 'red';
-        } else {
-          document.getElementById('modal-auth').style.display = 'none';
-          verificarUsuario();
-        }
+      } catch (err) {
+        msg.textContent = 'Erro de ligação: ' + (err.message || 'Verifique a ligação');
+        msg.style.color = 'red';
       }
     });
 
