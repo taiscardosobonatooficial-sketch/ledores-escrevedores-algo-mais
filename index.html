@@ -100,7 +100,6 @@
     .btn-acao:hover {
       opacity: 0.9;
     }
-    /* Modais */
     .modal {
       display: none;
       position: fixed;
@@ -142,7 +141,7 @@
 <body>
 
   <div class="user-bar">
-    <span id="user-info">👤 Carregando utilizador...</span>
+    <span id="user-info">👤 A carregar utilizador...</span>
     <div>
       <button id="btn-login-modal" onclick="abrirModalAuth('login')">Entrar</button>
       <button id="btn-cadastro-modal" onclick="abrirModalAuth('cadastro')">Cadastrar</button>
@@ -158,7 +157,6 @@
   <nav>
     <a href="#acervo">Acervo & Estantes</a>
     <a href="#publicar">Escrever & Publicar</a>
-    <a href="#suporte">Créditos & Suporte</a>
   </nav>
 
   <div class="banner-rosa">
@@ -170,7 +168,7 @@
     <h2>📖 Estantes de Obras</h2>
     <p>Selecione uma estante para filtrar o tipo de publicação:</p>
     <div style="display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px;">
-      <button class="btn-estante ativo" onclick="filtrarEstante('todas', this)" style="background:var(--principal); color:white; border:none; padding:8px 15px; border-radius:20px; cursor:pointer;">Todas as Obras</button>
+      <button class="btn-estante" onclick="filtrarEstante('todas', this)" style="background:var(--principal); color:white; border:none; padding:8px 15px; border-radius:20px; cursor:pointer;">Todas as Obras</button>
       <button class="btn-estante" onclick="filtrarEstante('Livro', this)" style="background:#eee; border:none; padding:8px 15px; border-radius:20px; cursor:pointer;">Livros</button>
       <button class="btn-estante" onclick="filtrarEstante('Diario', this)" style="background:#eee; border:none; padding:8px 15px; border-radius:20px; cursor:pointer;">Diários</button>
       <button class="btn-estante" onclick="filtrarEstante('Jornal', this)" style="background:#eee; border:none; padding:8px 15px; border-radius:20px; cursor:pointer;">Jornais / Revistas</button>
@@ -207,13 +205,12 @@
     </form>
   </div>
 
-  <!-- MODAL DE LOGIN / CADASTRO COM CPF E DADOS COMPLETOS -->
+  <!-- MODAL DE LOGIN / CADASTRO -->
   <div id="modal-auth" class="modal">
     <div class="modal-conteudo">
       <h3 id="auth-titulo" style="color: var(--principal); margin-top:0;">Entrar na Conta</h3>
       <form id="form-auth" style="display: flex; flex-direction: column; gap: 10px;">
         
-        <!-- Campos extras exclusivos para Cadastro -->
         <div id="campos-cadastro-extra" style="display: none; background: #fff5f8; padding: 10px; border-radius: 6px; border: 1px solid #f8bbd0;">
           <input type="text" id="cad-nome" placeholder="Nome Completo" style="width: 100%; margin-bottom: 8px; padding: 8px; box-sizing: border-box;">
           <input type="text" id="cad-cpf" placeholder="CPF (Somente números)" style="width: 100%; margin-bottom: 8px; padding: 8px; box-sizing: border-box;">
@@ -223,19 +220,8 @@
           <select id="cad-tipo" style="width: 100%; margin-bottom: 8px; padding: 8px;">
             <option value="leitor">Leitor(a)</option>
             <option value="escritor">Escritor(a)</option>
-            <option value="ambos">Ambos (Leitor e Escritor)</option>
+            <option value="ambos">Ambos</option>
           </select>
-
-          <label style="font-size: 12px; font-weight: bold; display: block;">Modalidade:</label>
-          <select id="cad-modalidade" style="width: 100%; margin-bottom: 8px; padding: 8px;">
-            <option value="comum">Conta Comum</option>
-            <option value="familiar_responsavel">Conta Familiar (Responsável)</option>
-            <option value="familiar_dependente">Conta Familiar (Dependente)</option>
-          </select>
-
-          <p style="font-size: 11px; color: #666; margin: 5px 0 0 0; line-height: 1.3;">
-            <strong>Regras:</strong> Sem palavrões, ofensas ou preconceito. 3 advertências geram suspensão de 7 dias, depois 6 meses, e reincidência bloqueia o CPF permanentemente.
-          </p>
         </div>
 
         <input type="email" id="auth-email" placeholder="E-mail" required style="padding: 10px;">
@@ -260,268 +246,133 @@
     </div>
   </div>
 
-  <!-- Lógica JavaScript + Supabase -->
+  <!-- SUPABASE E LÓGICA -->
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
     const SUPABASE_URL = 'https://lytfzyaxtzwkycvusod.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx5dGZ5enlheHR6d2t5Y3Z1c29kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI0NjI4NDAsImV4cCI6MjEwODAzODg0MH0.8J0_9kJOSxCYWniknIatFy2aNE_uX_f7UX1CrQolS3c';
     
-    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-      auth: { 
-        persistSession: true, 
-        autoRefreshToken: true,
-        detectSessionInUrl: true 
-      }
-    });
-
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     let obrasCache = [];
 
-    // 1. Verificar Utilizador
     async function verificarUsuario() {
       const userInfo = document.getElementById('user-info');
-      const btnLogin = document.getElementById('btn-login-modal');
-      const btnCad = document.getElementById('btn-cadastro-modal');
-      const btnLogout = document.getElementById('btn-logout');
-
       try {
         const { data: { session } } = await supabase.auth.getSession();
-        
-        if (!session || !session.user) {
-          userInfo.textContent = '👤 Visitante (Não conectado)';
-          if (btnLogin) btnLogin.style.display = 'inline-block';
-          if (btnCad) btnCad.style.display = 'inline-block';
-          if (btnLogout) btnLogout.style.display = 'none';
+        if (!session) {
+          userInfo.textContent = '👤 Visitante';
           return;
         }
-
-        const user = session.user;
-        const { data: perfil } = await supabase.from('profiles').select('*').eq('id', user.id).maybeSingle();
-
-        if (perfil) {
-          userInfo.textContent = `👤 ${perfil.nome || user.email} (${(perfil.tipo_usuario || 'comum').toUpperCase()})`;
-        } else {
-          userInfo.textContent = `👤 ${user.email}`;
-        }
-
-        if (btnLogin) btnLogin.style.display = 'none';
-        if (btnCad) btnCad.style.display = 'none';
-        if (btnLogout) btnLogout.style.display = 'inline-block';
-
-      } catch (err) {
-        console.log("Aviso na sessão:", err);
+        userInfo.textContent = `👤 ${session.user.email}`;
+      } catch (e) {
         userInfo.textContent = '👤 Visitante';
       }
     }
 
-    // Modal de Autenticação
-    window.abrirModalAuth = function(tipo) {
-      document.getElementById('modal-auth').style.display = 'flex';
-      const containerCadastro = document.getElementById('campos-cadastro-extra');
-      const titulo = document.getElementById('auth-titulo');
-      const btnSubmit = document.getElementById('btn-auth-submit');
-
-      if (tipo === 'cadastro') {
-        titulo.textContent = 'Criar Nova Conta';
-        btnSubmit.textContent = 'Cadastrar com CPF e Termos';
-        if (containerCadastro) containerCadastro.style.display = 'block';
-      } else {
-        titulo.textContent = 'Entrar na Conta';
-        btnSubmit.textContent = 'Entrar';
-        if (containerCadastro) containerCadastro.style.display = 'none';
-      }
-    };
-
-    // Submeter Auth (Login/Cadastro)
-    document.getElementById('form-auth').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const email = document.getElementById('auth-email').value.trim();
-      const password = document.getElementById('auth-senha').value;
-      const msg = document.getElementById('auth-msg');
-
-      msg.textContent = 'A processar...'; 
-      msg.style.color = 'var(--principal)';
-
-      const ehCadastro = document.getElementById('campos-cadastro-extra') && 
-                         document.getElementById('campos-cadastro-extra').style.display !== 'none';
-
-      try {
-        if (ehCadastro) {
-          const nome = document.getElementById('cad-nome').value.trim();
-          const cpf = document.getElementById('cad-cpf').value.trim();
-          const telefone = document.getElementById('cad-telefone').value.trim();
-          const tipo_usuario = document.getElementById('cad-tipo').value;
-          const modalidade = document.getElementById('cad-modalidade').value;
-
-          if (!nome || !cpf || !telefone) {
-            msg.textContent = 'Por favor, preencha Nome, CPF e Telefone.';
-            msg.style.color = 'red';
-            return;
-          }
-
-          const { data: authData, error: authError } = await supabase.auth.signUp({ email, password });
-          
-          if (authError) {
-            msg.textContent = 'Erro no registo: ' + authError.message; 
-            msg.style.color = 'red';
-            return;
-          }
-
-          if (authData?.user) {
-            await supabase.from('profiles').upsert([{
-              id: authData.user.id,
-              nome: nome,
-              email: email,
-              cpf: cpf,
-              telefone: telefone,
-              tipo_usuario: tipo_usuario,
-              modalidade: modalidade,
-              status_conta: 'ativo'
-            }]);
-
-            msg.textContent = '🎉 Conta criada com sucesso!';
-            msg.style.color = 'green';
-            setTimeout(() => {
-              document.getElementById('modal-auth').style.display = 'none';
-              verificarUsuario();
-            }, 1200);
-          }
-        } else {
-          const { error } = await supabase.auth.signInWithPassword({ email, password });
-          if (error) {
-            msg.textContent = 'Erro ao entrar: ' + error.message; 
-            msg.style.color = 'red';
-          } else {
-            document.getElementById('modal-auth').style.display = 'none';
-            verificarUsuario();
-          }
-        }
-      } catch (err) {
-        msg.textContent = 'Erro: ' + err.message;
-        msg.style.color = 'red';
-      }
-    });
-
-    window.fazerLogout = async function() {
-      await supabase.auth.signOut();
-      verificarUsuario();
-    };
-
-    // 2. Carregar Obras
     async function carregarObras() {
       const container = document.getElementById('lista-obras');
+      if (!container) return;
+
       try {
         const { data, error } = await supabase.from('livros').select('*').order('id', { ascending: false });
 
         if (error) {
-          container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: red;">Erro ao carregar acervo: ${error.message}</p>`;
+          container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: red;">Erro: ${error.message}</p>`;
           return;
         }
 
         obrasCache = data || [];
-        renderizarObras(obrasCache);
+        if (obrasCache.length === 0) {
+          container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #777;">Nenhuma obra cadastrada ainda. Seja o primeiro a publicar abaixo!</p>';
+          return;
+        }
+
+        container.innerHTML = '';
+        obrasCache.forEach(obra => {
+          const item = document.createElement('div');
+          item.className = 'obra-item';
+          item.innerHTML = `
+            <div>
+              <img src="${obra.capa_url || 'https://via.placeholder.com/200x280?text=Sem+Capa'}" alt="Capa">
+              <span class="tag">${obra.categoria || 'Livro'} • ${obra.genero || 'Geral'}</span>
+              <h3 style="margin: 6px 0; color: var(--principal); font-size: 16px;">${obra.titulo}</h3>
+              <p style="font-size: 12px; color: #666; font-style: italic;">Por ${obra.autor}</p>
+            </div>
+            <button class="btn-acao" onclick="abrirLeitor(${obra.id})">📖 Ler Obra</button>
+          `;
+          container.appendChild(item);
+        });
       } catch (e) {
-        container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: red;">Erro de conexão com a base de dados.</p>`;
+        container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: red;">Erro ao carregar acervo.</p>`;
       }
     }
 
-    function renderizarObras(lista) {
-      const container = document.getElementById('lista-obras');
-      if (!container) return;
-
-      if (!lista || lista.length === 0) {
-        container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #777;">Nenhuma obra cadastrada nesta estante ainda. Seja o primeiro a publicar abaixo!</p>';
-        return;
-      }
-
-      container.innerHTML = '';
-      lista.forEach(obra => {
-        const item = document.createElement('div');
-        item.className = 'obra-item';
-        item.innerHTML = `
-          <div>
-            <img src="${obra.capa_url || 'https://via.placeholder.com/200x280?text=Sem+Capa'}" alt="Capa">
-            <span class="tag">${obra.categoria || 'Livro'} • ${obra.genero || 'Geral'}</span>
-            <h3 style="margin: 6px 0; color: var(--principal); font-size: 16px;">${obra.titulo}</h3>
-            <p style="font-size: 12px; color: #666; font-style: italic;">Por ${obra.autor}</p>
-            <p style="font-size: 12px; color: #444; margin-bottom: 12px;">${obra.sinopse || 'Sem resumo.'}</p>
-          </div>
-          <button class="btn-acao" onclick="abrirLeitor(${obra.id})">📖 Ler Obra</button>
-        `;
-        container.appendChild(item);
-      });
-    }
-
-    window.filtrarEstante = function(categoria, btn) {
-      document.querySelectorAll('.btn-estante').forEach(b => {
-        b.style.background = '#eee';
-        b.style.color = '#333';
-      });
-      btn.style.background = 'var(--principal)';
-      btn.style.color = 'white';
-
-      if (categoria === 'todas') {
-        renderizarObras(obrasCache);
-      } else {
-        const filtradas = obrasCache.filter(o => o.categoria === categoria);
-        renderizarObras(filtradas);
-      }
-    };
-
-    // 3. Leitor
     window.abrirLeitor = async function(id) {
-      const { data } = await supabase.from('livros').select('*').eq('id', id).single();
-      if (!data) return;
-
-      document.getElementById('read-tag').textContent = `${data.categoria} • ${data.genero}`;
-      document.getElementById('read-titulo').textContent = data.titulo;
-      document.getElementById('read-autor').textContent = `Autor(a): ${data.autor}`;
-      document.getElementById('read-conteudo').textContent = data.conteudo;
+      const obra = obrasCache.find(o => o.id === id);
+      if (!obra) return;
+      document.getElementById('read-tag').textContent = `${obra.categoria} • ${obra.genero}`;
+      document.getElementById('read-titulo').textContent = obra.titulo;
+      document.getElementById('read-autor').textContent = `Autor(a): ${obra.autor}`;
+      document.getElementById('read-conteudo').textContent = obra.conteudo;
       document.getElementById('modal-leitura').style.display = 'flex';
     };
 
-    // 4. Publicar Obra Direto do Site
-    document.getElementById('form-publicar').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const msg = document.getElementById('msg-pub');
-      msg.textContent = "A publicar obra..."; 
-      msg.style.color = "var(--principal)";
-
-      let capaUrl = 'https://via.placeholder.com/200x280?text=Sem+Capa';
-      const fileInput = document.getElementById('pub-capa-file');
-
-      if (fileInput.files.length > 0) {
-        const file = fileInput.files[0];
-        const fileName = `${Date.now()}_${file.name}`;
-        const { error: uploadError } = await supabase.storage.from('capas').upload(fileName, file);
-        if (!uploadError) {
-          const { data: urlData } = supabase.storage.from('capas').getPublicUrl(fileName);
-          capaUrl = urlData.publicUrl;
-        }
-      }
-
-      const novaObra = {
-        titulo: document.getElementById('pub-titulo').value.trim(),
-        autor: document.getElementById('pub-autor').value.trim(),
-        categoria: document.getElementById('pub-categoria').value,
-        genero: document.getElementById('pub-genero').value,
-        sinopse: document.getElementById('pub-sinopse').value.trim(),
-        conteudo: document.getElementById('pub-conteudo').value.trim(),
-        capa_url: capaUrl
-      };
-
-      const { error } = await supabase.from('livros').insert([novaObra]);
-
-      if (error) {
-        msg.textContent = "Erro ao publicar: " + error.message; 
-        msg.style.color = "red";
+    window.abrirModalAuth = function(tipo) {
+      document.getElementById('modal-auth').style.display = 'flex';
+      const extra = document.getElementById('campos-cadastro-extra');
+      if (tipo === 'cadastro') {
+        document.getElementById('auth-titulo').textContent = 'Criar Conta';
+        if (extra) extra.style.display = 'block';
       } else {
-        msg.textContent = "🎉 Publicado com sucesso!"; 
-        msg.style.color = "green";
-        document.getElementById('form-publicar').reset();
-        carregarObras(); // Recarrega a lista trazendo a nova obra inserida!
+        document.getElementById('auth-titulo').textContent = 'Entrar';
+        if (extra) extra.style.display = 'none';
       }
-    });
+    };
+
+    const formPub = document.getElementById('form-publicar');
+    if (formPub) {
+      formPub.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const msg = document.getElementById('msg-pub');
+        msg.textContent = "A publicar obra..."; 
+
+        let capaUrl = 'https://via.placeholder.com/200x280?text=Sem+Capa';
+        const fileInput = document.getElementById('pub-capa-file');
+
+        if (fileInput && fileInput.files.length > 0) {
+          const file = fileInput.files[0];
+          const fileName = `${Date.now()}_${file.name}`;
+          const { error: uploadError } = await supabase.storage.from('capas').upload(fileName, file);
+          if (!uploadError) {
+            const { data: urlData } = supabase.storage.from('capas').getPublicUrl(fileName);
+            capaUrl = urlData.publicUrl;
+          }
+        }
+
+        const novaObra = {
+          titulo: document.getElementById('pub-titulo').value.trim(),
+          autor: document.getElementById('pub-autor').value.trim(),
+          categoria: document.getElementById('pub-categoria').value,
+          genero: document.getElementById('pub-genero').value,
+          sinopse: document.getElementById('pub-sinopse').value.trim(),
+          conteudo: document.getElementById('pub-conteudo').value.trim(),
+          capa_url: capaUrl
+        };
+
+        const { error } = await supabase.from('livros').insert([novaObra]);
+
+        if (error) {
+          msg.textContent = "Erro ao publicar: " + error.message; 
+          msg.style.color = "red";
+        } else {
+          msg.textContent = "🎉 Publicado com sucesso!"; 
+          msg.style.color = "green";
+          formPub.reset();
+          carregarObras();
+        }
+      });
+    }
 
     verificarUsuario();
     carregarObras();
