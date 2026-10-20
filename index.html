@@ -268,50 +268,59 @@
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx5dGZ5enlheHR6d2t5Y3Z1c29kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI0NjI4NDAsImV4cCI6MjEwODAzODg0MH0.8J0_9kJOSxCYWniknIatFy2aNE_uX_f7UX1CrQolS3c';
     
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-      auth: { persistSession: true, autoRefreshToken: true }
+      auth: { 
+        persistSession: true, 
+        autoRefreshToken: true,
+        detectSessionInUrl: true 
+      }
     });
 
     let obrasCache = [];
 
-    // 1. Verificar Utilizador e Punições
+    // 1. Verificar Utilizador e Punições com segurança
     async function verificarUsuario() {
+      const userInfo = document.getElementById('user-info');
+      const btnLogin = document.getElementById('btn-login-modal');
+      const btnCad = document.getElementById('btn-cadastro-modal');
+      const btnLogout = document.getElementById('btn-logout');
+
       try {
-        const { data: { user } } = await supabase.auth.getUser();
-        const userInfo = document.getElementById('user-info');
-        const btnLogin = document.getElementById('btn-login-modal');
-        const btnCad = document.getElementById('btn-cadastro-modal');
-        const btnLogout = document.getElementById('btn-logout');
-
-        if (user) {
-          const { data: perfil } = await supabase.from('profiles').select('*').eq('id', user.id).single();
-
-          if (perfil) {
-            if (perfil.status_conta !== 'ativo' && perfil.fim_suspensao) {
-              const agora = new Date();
-              const fim = new Date(perfil.fim_suspensao);
-              if (agora < fim) {
-                alert(`Sua conta está SUSPENSA até ${fim.toLocaleDateString('pt-BR')} devido a infrações das regras.`);
-                await supabase.auth.signOut();
-                location.reload();
-                return;
-              }
-            }
-            userInfo.textContent = `👤 ${perfil.nome || user.email} (${(perfil.tipo_usuario || 'comum').toUpperCase()})`;
-          } else {
-            userInfo.textContent = `👤 ${user.email}`;
-          }
-
-          if (btnLogin) btnLogin.style.display = 'none';
-          if (btnCad) btnCad.style.display = 'none';
-          if (btnLogout) btnLogout.style.display = 'inline-block';
-        } else {
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        
+        if (sessionError || !session || !session.user) {
           userInfo.textContent = '👤 Visitante (Não conectado)';
           if (btnLogin) btnLogin.style.display = 'inline-block';
           if (btnCad) btnCad.style.display = 'inline-block';
           if (btnLogout) btnLogout.style.display = 'none';
+          return;
         }
+
+        const user = session.user;
+        const { data: perfil } = await supabase.from('profiles').select('*').eq('id', user.id).maybeSingle();
+
+        if (perfil) {
+          if (perfil.status_conta !== 'ativo' && perfil.fim_suspensao) {
+            const agora = new Date();
+            const fim = new Date(perfil.fim_suspensao);
+            if (agora < fim) {
+              alert(`Sua conta está SUSPENSA até ${fim.toLocaleDateString('pt-BR')} devido a infrações das regras.`);
+              await supabase.auth.signOut();
+              location.reload();
+              return;
+            }
+          }
+          userInfo.textContent = `👤 ${perfil.nome || user.email} (${(perfil.tipo_usuario || 'comum').toUpperCase()})`;
+        } else {
+          userInfo.textContent = `👤 ${user.email}`;
+        }
+
+        if (btnLogin) btnLogin.style.display = 'none';
+        if (btnCad) btnCad.style.display = 'none';
+        if (btnLogout) btnLogout.style.display = 'inline-block';
+
       } catch (err) {
-        console.log("Sessão:", err);
+        console.log("Aviso na sessão:", err);
+        userInfo.textContent = '👤 Visitante';
       }
     }
 
@@ -351,195 +360,3 @@
           const nome = document.getElementById('cad-nome').value.trim();
           const cpf = document.getElementById('cad-cpf').value.trim();
           const telefone = document.getElementById('cad-telefone').value.trim();
-          const tipo_usuario = document.getElementById('cad-tipo').value;
-          const modalidade = document.getElementById('cad-modalidade').value;
-
-          if (!nome || !cpf || !telefone) {
-            msg.textContent = 'Por favor, preencha Nome, CPF e Telefone.';
-            msg.style.color = 'red';
-            return;
-          }
-
-          // Checa se CPF já está banido
-          const { data: cpfBanido } = await supabase.from('cpfs_banidos').select('*').eq('cpf', cpf).maybeSingle();
-          if (cpfBanido) {
-            msg.textContent = 'Este CPF está permanentemente BANIDO por descumprimento das regras.';
-            msg.style.color = 'red';
-            return;
-          }
-
-          // 1. Criar utilizador
-          const { data: authData, error: authError } = await supabase.auth.signUp({ email, password });
-          
-          if (authError) {
-            msg.textContent = 'Erro no registo: ' + authError.message; 
-            msg.style.color = 'red';
-            return;
-          }
-
-          if (authData?.user) {
-            // 2. Salvar Perfil
-            const { error: profileError } = await supabase.from('profiles').upsert([{
-              id: authData.user.id,
-              nome: nome,
-              email: email,
-              cpf: cpf,
-              telefone: telefone,
-              tipo_usuario: tipo_usuario,
-              modalidade: modalidade,
-              strikes: 0,
-              status_conta: 'ativo'
-            }]);
-
-            if (profileError) {
-              msg.textContent = "Erro no perfil: " + profileError.message;
-              msg.style.color = 'orange';
-            } else {
-              msg.textContent = '🎉 Conta criada com sucesso!';
-              msg.style.color = 'green';
-              setTimeout(() => {
-                document.getElementById('modal-auth').style.display = 'none';
-                verificarUsuario();
-              }, 1200);
-            }
-          }
-        } else {
-          // Login
-          const { error } = await supabase.auth.signInWithPassword({ email, password });
-          if (error) {
-            msg.textContent = 'Erro ao entrar: ' + error.message; 
-            msg.style.color = 'red';
-          } else {
-            document.getElementById('modal-auth').style.display = 'none';
-            verificarUsuario();
-          }
-        }
-      } catch (err) {
-        msg.textContent = 'Erro de ligação: ' + (err.message || 'Verifique a ligação');
-        msg.style.color = 'red';
-      }
-    });
-
-    window.fazerLogout = async function() {
-      await supabase.auth.signOut();
-      verificarUsuario();
-    };
-
-    // 2. Carregar Obras do Banco
-    async function carregarObras() {
-      const container = document.getElementById('lista-obras');
-      try {
-        const { data, error } = await supabase.from('livros').select('*').order('id', { ascending: false });
-
-        if (error) {
-          container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: red;">Erro ao carregar: ${error.message}</p>`;
-          return;
-        }
-
-        obrasCache = data || [];
-        renderizarObras(obrasCache);
-      } catch (e) {
-        container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: red;">Erro de conexão: ${e.message}</p>`;
-      }
-    }
-
-    function renderizarObras(lista) {
-      const container = document.getElementById('lista-obras');
-      if (!container) return;
-
-      if (lista.length === 0) {
-        container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #777;">Nenhuma obra cadastrada nesta estante ainda.</p>';
-        return;
-      }
-
-      container.innerHTML = '';
-      lista.forEach(obra => {
-        const item = document.createElement('div');
-        item.className = 'obra-item';
-        item.innerHTML = `
-          <div>
-            <img src="${obra.capa_url || 'https://via.placeholder.com/200x280?text=Sem+Capa'}" alt="Capa">
-            <span class="tag">${obra.categoria || 'Livro'} • ${obra.genero || 'Geral'}</span>
-            <h3 style="margin: 6px 0; color: var(--principal); font-size: 16px;">${obra.titulo}</h3>
-            <p style="font-size: 12px; color: #666; font-style: italic;">Por ${obra.autor}</p>
-            <p style="font-size: 12px; color: #444; margin-bottom: 12px;">${obra.sinopse || 'Sem resumo.'}</p>
-          </div>
-          <button class="btn-acao" onclick="abrirLeitor(${obra.id})">📖 Ler Obra</button>
-        `;
-        container.appendChild(item);
-      });
-    }
-
-    window.filtrarEstante = function(categoria, btn) {
-      document.querySelectorAll('.btn-estante').forEach(b => {
-        b.style.background = '#eee';
-        b.style.color = '#333';
-      });
-      btn.style.background = 'var(--principal)';
-      btn.style.color = 'white';
-
-      if (categoria === 'todas') {
-        renderizarObras(obrasCache);
-      } else {
-        const filtradas = obrasCache.filter(o => o.categoria === categoria);
-        renderizarObras(filtradas);
-      }
-    };
-
-    // 3. Leitor
-    window.abrirLeitor = async function(id) {
-      const { data } = await supabase.from('livros').select('*').eq('id', id).single();
-      if (!data) return;
-
-      document.getElementById('read-tag').textContent = `${data.categoria} • ${data.genero}`;
-      document.getElementById('read-titulo').textContent = data.titulo;
-      document.getElementById('read-autor').textContent = `Autor(a): ${data.autor}`;
-      document.getElementById('read-conteudo').textContent = data.conteudo;
-      document.getElementById('modal-leitura').style.display = 'flex';
-    };
-
-    // 4. Publicar Obra
-    document.getElementById('form-publicar').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const msg = document.getElementById('msg-pub');
-      msg.textContent = "A publicar obra..."; msg.style.color = "var(--principal)";
-
-      let capaUrl = 'https://via.placeholder.com/200x280?text=Sem+Capa';
-      const fileInput = document.getElementById('pub-capa-file');
-
-      if (fileInput.files.length > 0) {
-        const file = fileInput.files[0];
-        const fileName = `${Date.now()}_${file.name}`;
-        const { error: uploadError } = await supabase.storage.from('capas').upload(fileName, file);
-        if (!uploadError) {
-          const { data: urlData } = supabase.storage.from('capas').getPublicUrl(fileName);
-          capaUrl = urlData.publicUrl;
-        }
-      }
-
-      const novaObra = {
-        titulo: document.getElementById('pub-titulo').value.trim(),
-        autor: document.getElementById('pub-autor').value.trim(),
-        categoria: document.getElementById('pub-categoria').value,
-        genero: document.getElementById('pub-genero').value,
-        sinopse: document.getElementById('pub-sinopse').value.trim(),
-        conteudo: document.getElementById('pub-conteudo').value.trim(),
-        capa_url: capaUrl
-      };
-
-      const { error } = await supabase.from('livros').insert([novaObra]);
-
-      if (error) {
-        msg.textContent = "Erro ao publicar: " + error.message; msg.style.color = "red";
-      } else {
-        msg.textContent = "🎉 Publicado com sucesso!"; msg.style.color = "green";
-        document.getElementById('form-publicar').reset();
-        carregarObras();
-      }
-    });
-
-    verificarUsuario();
-    carregarObras();
-  </script>
-</body>
-</html>
