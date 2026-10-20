@@ -6,10 +6,10 @@
   <meta name="description" content="Um espaço para ler, escrever e compartilhar histórias.">
   <meta name="theme-color" content="#593778">
   <title>Ledores e Escrevedores — Algo Mais</title>
-
+ 
   <style>
     * { box-sizing: border-box; }
-
+ 
     :root {
       --fundo: #fbf7ff;
       --texto: #30233b;
@@ -22,7 +22,7 @@
       --cartao: #ffffff;
       --whatsapp: #25d366;
     }
-
+ 
     body {
       margin: 0;
       font-family: Georgia, serif;
@@ -30,21 +30,21 @@
       color: var(--texto);
       transition: background 0.4s, color 0.4s;
     }
-
+ 
     header {
       background: var(--principal);
       color: white;
       padding: 24px 18px;
       text-align: center;
     }
-
+ 
     header h1 {
       margin: 0 0 10px;
       font-size: clamp(25px, 5vw, 38px);
     }
-
+ 
     header p { margin: 0; }
-
+ 
     nav {
       background: var(--navegacao);
       padding: 13px;
@@ -53,7 +53,7 @@
       top: 0;
       z-index: 100;
     }
-
+ 
     nav a {
       color: white;
       text-decoration: none;
@@ -62,30 +62,30 @@
       padding: 5px;
       font-weight: bold;
     }
-
+ 
     nav a:hover { text-decoration: underline; }
-
+ 
     main {
       max-width: 950px;
       margin: 35px auto;
       padding: 0 20px;
     }
-
+ 
     .welcome, .card, .recommendations, .estante-card {
       background: var(--cartao);
       border-radius: 16px;
       box-shadow: 0 4px 18px #38204b12;
     }
-
+ 
     .welcome {
       padding: 30px 24px;
       text-align: center;
     }
-
+ 
     .welcome h2, .card h3 {
       color: var(--destaque);
     }
-
+ 
     .button {
       display: inline-block;
       background: var(--botao);
@@ -96,9 +96,9 @@
       margin-top: 12px;
       font-weight: bold;
     }
-
+ 
     .button:hover { filter: brightness(1.1); }
-
+ 
     .theme-banner {
       margin-top: 24px;
       padding: 22px;
@@ -107,66 +107,66 @@
       background: var(--principal);
       color: white;
     }
-
+ 
     .theme-banner h2 { margin: 0 0 10px; }
     .theme-banner p { margin: 8px 0; }
-
+ 
     .recommendations {
       margin-top: 24px;
       padding: 24px;
       border: 1px solid var(--borda);
     }
-
+ 
     .recommendations h2 {
       color: var(--destaque);
       margin-top: 0;
     }
-
+ 
     .reading-list {
       padding-left: 22px;
       line-height: 1.8;
     }
-
+ 
     /* Estantes Virtuais */
     .secao-estantes {
       margin-top: 30px;
     }
-
+ 
     .secao-estantes h2 {
       color: var(--principal);
       text-align: center;
       margin-bottom: 20px;
     }
-
+ 
     .grid-estantes {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
       gap: 18px;
     }
-
+ 
     .estante-card {
       padding: 20px;
       border: 1px solid var(--borda);
       text-align: center;
       transition: transform 0.2s;
     }
-
+ 
     .estante-card:hover {
       transform: translateY(-4px);
     }
-
+ 
     .estante-card h3 {
       margin-top: 0;
       color: var(--principal);
     }
-
+ 
     .generos-lista {
       font-size: 14px;
       color: #685875;
       margin-top: 10px;
       line-height: 1.5;
     }
-
+ 
     /* Lista de Obras Publicadas */
     .grid-obras {
       display: grid;
@@ -174,38 +174,36 @@
       gap: 20px;
       margin-top: 20px;
     }
-
+ 
     .obra-item {
       background: var(--cartao);
       border: 1px solid var(--borda);
       border-radius: 12px;
       padding: 15px;
       text-align: center;
-      transition: transform 0.2s;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
-
-    .obra-item:hover {
-      transform: translateY(-3px);
-    }
-
+ 
     .obra-item img {
       width: 100%;
       height: 220px;
       object-fit: cover;
       border-radius: 8px;
     }
-
+ 
     .obra-item h4 {
       margin: 10px 0 5px;
       color: var(--principal);
     }
-
+ 
     .obra-item .autor {
       font-size: 13px;
       color: #666;
       margin-bottom: 8px;
     }
-
+ 
     .obra-item .tag-categoria {
       display: inline-block;
       background: var(--borda);
@@ -216,13 +214,13 @@
       font-weight: bold;
       margin-bottom: 8px;
     }
-
+ 
     footer {
       text-align: center;
       padding: 25px;
       color: var(--rodape);
     }
-
+ 
     /* Autenticação & Abas */
     .btn-aba {
       flex: 1;
@@ -234,12 +232,12 @@
       cursor: pointer;
       font-weight: bold;
     }
-
+ 
     .btn-aba.ativa {
       background: var(--principal);
       color: white;
     }
-
+ 
     .btn-login {
       display: inline-block;
       background: var(--principal);
@@ -252,9 +250,9 @@
       font-size: 16px;
       width: 100%;
     }
-
+ 
     .btn-login:hover { filter: brightness(1.1); }
-
+ 
     .btn-logoff {
       background: #d81b60;
       color: white;
@@ -265,7 +263,7 @@
       cursor: pointer;
       margin-top: 15px;
     }
-
+ 
     /* Bloco de WhatsApp e Créditos */
     .card-creditos-whats {
       background: #f0faf3;
@@ -275,12 +273,12 @@
       margin-top: 25px;
       text-align: center;
     }
-
+ 
     .card-creditos-whats h3 {
       color: #1e7e43;
       margin-top: 0;
     }
-
+ 
     .btn-whats {
       display: inline-flex;
       align-items: center;
@@ -296,78 +294,9 @@
       margin-top: 15px;
       box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
     }
-
+ 
     .btn-whats:hover { filter: brightness(1.05); }
-
-    /* Modal de Leitura */
-    .modal-leitura {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.7);
-      z-index: 1000;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-    }
-
-    .modal-conteudo {
-      background: var(--cartao);
-      width: 100%;
-      max-width: 750px;
-      max-height: 85vh;
-      border-radius: 16px;
-      padding: 25px;
-      overflow-y: auto;
-      position: relative;
-      box-shadow: 0 5px 25px rgba(0,0,0,0.3);
-    }
-
-    .fechar-modal {
-      position: absolute;
-      top: 15px;
-      right: 20px;
-      font-size: 24px;
-      font-weight: bold;
-      cursor: pointer;
-      color: var(--texto);
-    }
-
-    .lista-capitulos-botoes {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin: 15px 0;
-    }
-
-    .btn-capitulo-aba {
-      background: #f0e8f5;
-      border: 1px solid var(--borda);
-      padding: 8px 14px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 13px;
-      font-weight: bold;
-    }
-
-    .btn-capitulo-aba.ativo {
-      background: var(--principal);
-      color: white;
-    }
-
-    .texto-capitulo {
-      line-height: 1.8;
-      white-space: pre-wrap;
-      font-size: 16px;
-      background: #fcfbfe;
-      padding: 15px;
-      border-radius: 8px;
-      border: 1px solid var(--borda);
-    }
-
+ 
     /* Temas comemorativos */
     body[data-theme="junina"] {
       --fundo: #fff8e8; --texto: #49301e; --principal: #b94725;
@@ -385,81 +314,81 @@
       --fundo: #fff9e9; --texto: #34304a; --principal: #6750a4;
       --navegacao: #315b8a; --botao: #c45a36; --destaque: #59428e; --borda: #f0d9a0;
     }
-
+ 
     @media (max-width: 480px) {
       nav a { margin: 2px 5px; font-size: 14px; }
       main { padding: 0 14px; }
     }
   </style>
 </head>
-
+ 
 <body data-theme="normal">
   <header>
     <h1>📚 Ledores e Escrevedores</h1>
     <p>Algo Mais — histórias que aproximam pessoas</p>
   </header>
-
+ 
   <nav>
     <a href="#inicio">Início</a>
     <a href="#estantes">Estantes</a>
     <a href="#publicar">Publicar</a>
     <a href="#area-conta">Minha Conta</a>
   </nav>
-
+ 
   <main id="inicio">
     <section class="welcome">
       <h2>Um mundo de histórias espera por você!</h2>
       <p>Um espaço para descobrir livros, compartilhar ideias e dar vida a novas histórias.</p>
       <a class="button" href="#estantes">Explorar Estantes</a>
     </section>
-
+ 
     <!-- Banner Tema Dinâmico -->
     <section class="theme-banner" aria-live="polite">
       <h2 id="theme-title">💜 Bem-vindo ao nosso mundo literário!</h2>
       <p id="theme-description">Sempre há uma nova história esperando por você.</p>
       <p id="theme-dates"></p>
     </section>
-
+ 
     <!-- Recomendações Sazonais -->
     <section class="recommendations" id="recomendacoes">
       <h2 id="recommendation-title">📚 Leituras especiais do momento</h2>
       <p id="recommendation-intro">Descubra ideias de leitura para sua próxima aventura literária.</p>
       <ul class="reading-list" id="recommendation-list">
-        <li>Contos para ler em momentos tranquilos.</li>
-        <li>Romances, aventuras e histórias de imaginação.</li>
-        <li>Novos autores e capítulos para descobrir.</li>
+       <li>Contos para ler em momentos tranquilos.</li>
+       <li>Romances, aventuras e histórias de imaginação.</li>
+       <li>Novos autores e capítulos para descobrir.</li>
       </ul>
     </section>
-
-    <!-- Estantes do Site -->
+ 
+    <!-- Estantes do Site (Categorias e Gêneros) -->
     <section class="secao-estantes" id="estantes">
       <h2>📖 Nossas Estantes Virtuais</h2>
       <div class="grid-estantes">
         <div class="estante-card">
           <h3>📚 Livros & Diários</h3>
-          <p>Obras completas, capítulos e diários em escrita contínua.</p>
+         <p>Obras completas, capítulos e diários em escrita contínua.</p>
           <div class="generos-lista">
             Gêneros: Conto, Romance, Investigação, Comédia, Poesia, Drama, Memórias, Fofoca, Piada.
           </div>
         </div>
-
+ 
         <div class="estante-card">
           <h3>✍️ Redações</h3>
-          <p>Ensaios, opiniões e produções textuais de autores e estudantes.</p>
+         <p>Ensaios, opiniões e produções textuais de autores e estudantes.</p>
         </div>
-
+ 
         <div class="estante-card">
           <h3>📰 Jornais & Revistas</h3>
-          <p>Artigos, notícias da comunidade e publicações periódicas.</p>
+         <p>Artigos, notícias da comunidade e publicações periódicas.</p>
         </div>
-
+ 
         <div class="estante-card">
           <h3>🖼️ Fotos & Álbuns</h3>
-          <p>Registros visuais, memórias ilustradas e fotolivros.</p>
+         <p>Registros visuais, memórias ilustradas e fotolivros.</p>
         </div>
       </div>
     </section>
-
+ 
     <!-- Exibição Dinâmica das Histórias Publicadas -->
     <section class="card" style="margin-top: 30px; padding: 24px;">
       <h2>✨ Obras Recentes no Site</h2>
@@ -467,356 +396,117 @@
         <p style="grid-column: 1/-1; text-align: center; color: #777;">Carregando acervo do site...</p>
       </div>
     </section>
-
+ 
     <!-- Semana Especial da Reforma Protestante -->
     <section id="semana-reforma" style="display:none; background:#fff0f6; color:#63345f; padding:28px 20px; margin:25px auto; border-radius:16px; text-align:center;">
       <h2 style="color:#9b4b91;">🌷 Semana da Reforma Protestante</h2>
-      <p><strong>De 25 a 31 de outubro</strong></p>
-
+     <p><strong>De 27 a 31 de outubro</strong></p>
+ 
+      <!-- Bloco Editorial Protestantism / Luther -->
       <div style="background: white; border: 2px dashed #9b4b91; padding: 20px; border-radius: 12px; margin: 20px auto; max-width: 760px; text-align: left;">
         <h3 style="margin-top:0; color:#593778; text-align:center;">📜 O Impacto da Reforma na Leitura e na Educação</h3>
         <p>Em 31 de outubro de 1517, ao afixar as 95 Teses, Martinho Lutero deu início a um movimento que mudou não apenas a teologia, mas também a alfabetização mundial. A tradução da Bíblia para a língua do povo incentivou a criação de escolas e a universalização da leitura para homens, mulheres e crianças.</p>
         <p style="font-style: italic; text-align: center; color: #812653;">"A leitura da Palavra e a busca do conhecimento devem ser acessíveis a todos os lares."</p>
       </div>
-
+ 
       <p>Durante estes dias, nosso site celebra os livros e a imaginação, mas dedica um espaço especial à Reforma Protestante de 1517.</p>
-      <p><strong>Que a leitura nos ajude a crescer em sabedoria, fé e amor ao próximo! 💗</strong></p>
+     <p><strong>Que a leitura nos ajude a crescer em sabedoria, fé e amor ao próximo! 💗</strong></p>
     </section>
-
+ 
     <!-- Formulário de Publicação Direta pelo Site -->
     <section id="publicar" class="card" style="margin-top: 30px; padding: 24px;">
       <h2>✍️ Publicar Nova História / Capítulo</h2>
       <p>Escreva diretamente no site sem precisar criar arquivos HTML!</p>
-
+ 
+      <!-- Escolha de Modo: Nova Obra ou Novo Capítulo -->
       <div style="margin-bottom: 20px;">
-        <label><strong>O que você deseja fazer?</strong></label><br>
+       <label><strong>O que você deseja fazer?</strong></label><br>
         <select id="pub-modo" style="width: 100%; padding: 10px; margin-top: 8px; border: 1px solid var(--borda); border-radius: 6px; font-weight: bold; background: #f0e8f5;">
           <option value="nova-obra">📖 Cadastrar Nova Obra / Livro / Diário</option>
           <option value="novo-capitulo">➕ Adicionar Capítulo a uma Obra Existente</option>
-        </select>
+       </select>
       </div>
-
+ 
       <!-- FORMULÁRIO 1: NOVA OBRA -->
       <form id="form-publicar-obra">
         <label><strong>Título da Obra:</strong></label><br>
         <input type="text" id="pub-titulo" required placeholder="Ex: Segredos Desegredados da Vovó Carmelina" style="width: 100%; padding: 10px; margin: 8px 0 16px; border: 1px solid var(--borda); border-radius: 6px;"><br>
-
-        <label><strong>Nome do Autor(a):</strong></label><br>
+ 
+       <label><strong>Nome do Autor(a):</strong></label><br>
         <input type="text" id="pub-autor" required placeholder="Ex: Vovó Carmelina / Taís Cardoso" style="width: 100%; padding: 10px; margin: 8px 0 16px; border: 1px solid var(--borda); border-radius: 6px;"><br>
-
+ 
         <div style="display: flex; gap: 15px; flex-wrap: wrap;">
           <div style="flex: 1; min-width: 180px;">
-            <label><strong>Estante (Tipo):</strong></label><br>
+           <label><strong>Estante (Tipo):</strong></label><br>
             <select id="pub-categoria" style="width: 100%; padding: 10px; margin: 8px 0 16px; border: 1px solid var(--borda); border-radius: 6px;">
-              <option value="Livro">Livro</option>
-              <option value="Diário">Diário</option>
-              <option value="Redação">Redação</option>
-              <option value="Jornal/Revista">Jornal / Revista</option>
-              <option value="Receita">Receita</option>
-              <option value="Fotos/Álbum">Fotos / Álbum</option>
+             <option value="Livro">Livro</option>
+             <option value="Diário">Diário</option>
+             <option value="Redação">Redação</option>
+             <option value="Jornal/Revista">Jornal / Revista</option>
+             <option value="Receita">Receita</option>
+             <option value="Fotos/Álbum">Fotos / Álbum</option>
             </select>
           </div>
-
+ 
           <div style="flex: 1; min-width: 180px;">
-            <label><strong>Gênero / Estilo:</strong></label><br>
-            <input type="text" id="pub-genero" placeholder="Ex: Memórias, Conto, Fofoca..." style="width: 100%; padding: 10px; margin: 8px 0 16px; border: 1px solid var(--borda); border-radius: 6px;"><br>
+           <label><strong>Gênero / Estilo:</strong></label><br>
+            <input type="text" id="pub-genero" placeholder="Ex: Memórias, Conto, Fofoca, História de Pescador..." style="width: 100%; padding: 10px; margin: 8px 0 16px; border: 1px solid var(--borda); border-radius: 6px;"><br>
           </div>
         </div>
-
-        <label><strong>Capa da Obra (Selecione o arquivo da foto):</strong></label><br>
+ 
+       <label><strong>Capa da Obra (Selecione o arquivo da foto):</strong></label><br>
         <input type="file" id="pub-capa-file" accept="image/*" style="width: 100%; padding: 10px; margin: 8px 0 16px; border: 1px solid var(--borda); border-radius: 6px; background: #fff;"><br>
-
-        <label><strong>Sinopse / Resumo:</strong></label><br>
+ 
+       <label><strong>Sinopse / Resumo:</strong></label><br>
         <textarea id="pub-sinopse" rows="3" placeholder="Resumo do livro ou diário..." style="width: 100%; padding: 10px; margin: 8px 0 16px; border: 1px solid var(--borda); border-radius: 6px;"></textarea><br>
-
-        <label><strong>Texto da História / Capítulo Inicial:</strong></label><br>
+ 
+       <label><strong>Texto da História / Capítulo Inicial:</strong></label><br>
         <textarea id="pub-conteudo" rows="10" required placeholder="Cole ou digite seu texto aqui..." style="width: 100%; padding: 10px; margin: 8px 0 16px; border: 1px solid var(--borda); border-radius: 6px;"></textarea><br>
-
+ 
         <button type="submit" class="btn-login">🚀 Publicar Obra no Site</button>
         <p id="msg-publicar" style="margin-top: 10px; font-weight: bold;"></p>
       </form>
-
+ 
       <!-- FORMULÁRIO 2: NOVO CAPÍTULO -->
       <form id="form-publicar-capitulo" style="display: none;">
-        <label><strong>Selecione o Livro / Diário:</strong></label><br>
+       <label><strong>Selecione o Livro / Diário:</strong></label><br>
         <select id="select-obra-existente" required style="width: 100%; padding: 10px; margin: 8px 0 16px; border: 1px solid var(--borda); border-radius: 6px;">
           <option value="">Carregando suas obras...</option>
-        </select><br>
-
-        <label><strong>Título do Capítulo / Páginas do Dia:</strong></label><br>
+       </select><br>
+ 
+       <label><strong>Título do Capítulo / Páginas do Dia:</strong></label><br>
         <input type="text" id="cap-titulo" required placeholder="Ex: Capítulo 1 - O Caderno de 1944" style="width: 100%; padding: 10px; margin: 8px 0 16px; border: 1px solid var(--borda); border-radius: 6px;"><br>
-
-        <label><strong>Texto do Capítulo:</strong></label><br>
+ 
+       <label><strong>Texto do Capítulo:</strong></label><br>
         <textarea id="cap-conteudo" rows="10" required placeholder="Cole as novas páginas do capítulo aqui..." style="width: 100%; padding: 10px; margin: 8px 0 16px; border: 1px solid var(--borda); border-radius: 6px;"></textarea><br>
-
+ 
         <button type="submit" class="btn-login">➕ Adicionar Capítulo ao Livro</button>
         <p id="msg-capitulo" style="margin-top: 10px; font-weight: bold;"></p>
       </form>
     </section>
-
-    <!-- Área de Autenticação -->
+ 
+    <!-- Área de Autenticação (Login & Cadastro Familiar) -->
     <section id="area-conta" style="margin-top: 30px;">
+      <!-- Sessão Ativa -->
       <div id="area-logado" class="card" style="display: none; text-align: center; padding: 24px;">
         <h2>🌸 Olá, <span id="nome-usuario-logado">Leitor</span>!</h2>
-        <p><strong>Tipo de Conta:</strong> <span id="tipo-conta-logado">Titular</span></p>
-        <p><strong>Saldo de Créditos:</strong> <span id="saldo-creditos">30.000</span> créditos</p>
+       <p><strong>Tipo de Conta:</strong> <span id="tipo-conta-logado">Titular</span></p>
+       <p><strong>Saldo de Créditos:</strong> <span id="saldo-creditos">30.000</span> créditos</p>
         <button id="btn-logoff" class="btn-logoff">Sair da Conta (Logoff)</button>
       </div>
-
+ 
+      <!-- Sessão Deslogado -->
       <div id="area-deslogado" class="card" style="padding: 24px;">
         <div style="display: flex; gap: 10px; margin-bottom: 20px;">
           <button id="aba-login" class="btn-aba ativa">Entrar (Login)</button>
           <button id="aba-cadastro" class="btn-aba">Criar Conta (Cadastro)</button>
         </div>
-
+ 
+        <!-- Form Login -->
         <form id="form-login">
           <h2>🔑 Acessar sua conta</h2>
-          <label>E-mail</label><br>
+         <label>E-mail</label><br>
           <input id="email-login" type="email" required style="width: 100%; padding: 10px; margin: 8px 0 16px; border: 1px solid var(--borda); border-radius: 6px;"><br>
-
-          <label>Senha</label><br>
-          <input id="senha-login" type="password" required style="width: 100%; padding: 10px; margin: 8px 0 16px; border: 1px solid var(--borda); border-radius: 6px;"><br>
-
-          <button type="submit" class="btn-login">Entrar no Site</button>
-          <p id="mensagem-login" style="margin-top: 12px; font-weight: bold;"></p>
-        </form>
-
-        <form id="form-cadastro" style="display: none;">
-          <h2>📚 Criar nova conta</h2>
-          <label>Tipo de Conta</label><br>
-          <select id="tipo-conta" style="width: 100%; padding: 10px; margin: 8px 0 16px; border: 1px solid var(--borda); border-radius: 6px;">
-            <option value="titular">Conta Principal (Pai / Mãe / Titular)</option>
-            <option value="dependente">Subconta Familiar (Filho / Dependente)</option>
-          </select><br>
-
-          <label>Nome Completo</label><br>
-          <input id="nome-cadastro" type="text" required style="width: 100%; padding: 10px; margin: 8px 0 16px; border: 1px solid var(--borda); border-radius: 6px;"><br>
-
-          <label>CPF do Titular/Membro</label><br>
-          <input id="cpf-cadastro" type="text" placeholder="000.000.000-00" required style="width: 100%; padding: 10px; margin: 8px 0 16px; border: 1px solid var(--borda); border-radius: 6px;"><br>
-
-          <div id="campo-responsavel" style="display: none;">
-            <label>CPF do Responsável (Pai/Mãe Titular)</label><br>
-            <input id="cpf-responsavel" type="text" placeholder="CPF do titular" style="width: 100%; padding: 10px; margin: 8px 0 16px; border: 1px solid var(--borda); border-radius: 6px;"><br>
-          </div>
-
-          <label>Data de Nascimento</label><br>
-          <input id="nascimento-cadastro" type="date" required style="width: 100%; padding: 10px; margin: 8px 0 16px; border: 1px solid var(--borda); border-radius: 6px;"><br>
-
-          <label>E-mail</label><br>
-          <input id="email-cadastro" type="email" required style="width: 100%; padding: 10px; margin: 8px 0 16px; border: 1px solid var(--borda); border-radius: 6px;"><br>
-
-          <label>Senha (mínimo de 8 caracteres)</label><br>
-          <input id="senha-cadastro" type="password" minlength="8" required style="width: 100%; padding: 10px; margin: 8px 0 16px; border: 1px solid var(--borda); border-radius: 6px;"><br>
-
-          <button type="submit" class="btn-login">Finalizar Cadastro</button>
-          <p id="mensagem-cadastro" style="margin-top: 12px; font-weight: bold;"></p>
-        </form>
-      </div>
-    </section>
-
-    <!-- Bloco de WhatsApp -->
-    <section class="card-creditos-whats">
-      <h3>💬 Precisa de Mais Créditos para Ler?</h3>
-      <p>Renove seu saldo ou garanta o acesso ilimitado direto pelo WhatsApp!</p>
-      <p><strong>Pacote Avulso:</strong> R$ 5,00 (+25.000 Créditos)<br>
-      <strong>Plano Ilimitado:</strong> R$ 20,00 (90 dias de leitura livre)</p>
-      
-      <a href="https://wa.me/5541984251049?text=Olá!%20Gostaria%20de%20comprar%20créditos%20para%20o%20site%20Ledores%20e%20Escrevedores." target="_blank" class="btn-whats">
-        📱 Comprar Créditos pelo WhatsApp
-      </a>
-    </section>
-
-    <!-- Modal de Leitura de Obras e Capítulos -->
-    <div id="modal-leitura" class="modal-leitura">
-      <div class="modal-conteudo">
-        <span id="fechar-modal" class="fechar-modal">&times;</span>
-        <h2 id="modal-titulo-obra" style="color: var(--principal); margin-top: 0;"></h2>
-        <p id="modal-autor-obra" style="font-weight: bold; color: #666;"></p>
-        <p id="modal-sinopse-obra" style="font-style: italic; color: #444;"></p>
-
-        <hr style="border: 0; border-top: 1px solid var(--borda); margin: 20px 0;">
-
-        <h3>📖 Capítulos</h3>
-        <div id="modal-lista-capitulos" class="lista-capitulos-botoes">
-          <!-- Botões dos capítulos gerados via JS -->
-        </div>
-
-        <div id="modal-conteudo-capitulo" class="texto-capitulo">
-          Selecione um capítulo acima para ler.
-        </div>
-      </div>
-    </div>
-  </main>
-
-  <footer>
-    <p>© Ledores e Escrevedores — Algo Mais</p>
-    <p>Um projeto para quem ama ler e escrever. 💜</p>
-  </footer>
-
-  <!-- Scripts Temáticos -->
-  <script>
-    function atualizarTema() {
-      const agora = new Date();
-      const mes = agora.getMonth() + 1;
-      const dia = agora.getDate();
-
-      const temas = {
-        normal: { classe: "normal", titulo: "💜 Bem-vindo ao nosso mundo literário!", descricao: "Sempre há uma nova história esperando por você.", datas: "", recomendacao: "📚 Leituras para descobrir", introducao: "Explore diferentes estilos e encontre histórias que combinem com você.", itens: ["Contos para ler em momentos tranquilos.", "Romances, aventuras e histórias de imaginação.", "Novos autores e capítulos para descobrir."] },
-        junina: { classe: "junina", titulo: "🎉 Arraiá literário!", descricao: "Bandeirinhas, tradições e histórias para aquecer o coração.", datas: "Tema especial de Festa Junina", recomendacao: "🌽 Histórias para ler no arraiá", introducao: "Entre no clima junino com sugestões de leitura.", itens: ["Contos populares e lendas brasileiras.", "Histórias em pequenas cidades.", "Romances e aventuras tradicionais."] },
-        namorados: { classe: "namorados", titulo: "💕 Especial Dia dos Namorados", descricao: "Uma semana dedicada ao amor e às histórias que aproximam corações.", datas: "De 9 a 14 de junho", recomendacao: "❤️ Leituras para aquecer o coração", introducao: "Que tal escolher uma história de amor para esta semana?", itens: ["Romances com encontros inesperados.", "Histórias de amor e reencontros.", "Contos românticos para compartilhar."] },
-        rosa: { classe: "rosa", titulo: "🎀 Outubro Rosa", descricao: "Um espaço para histórias de coragem, acolhimento e esperança.", datas: "Campanha especial de outubro", recomendacao: "🌷 Histórias de força e esperança", introducao: "Conheça temas literários ligados à empatia, autoestima e superação.", itens: ["Narrativas sobre coragem e recomeços.", "Histórias de amizade e acolhimento.", "Livros sobre superar desafios."] },
-        criancas: { classe: "criancas", titulo: "🧸 Viva a Semana das Crianças!", descricao: "Imaginação, descobertas e aventuras para leitores de todas as idades.", datas: "De 10 a 14 de outubro", recomendacao: "🌈 Um mundo de aventuras", introducao: "Celebre a leitura com histórias escolhidas de acordo com a idade.", itens: ["Contos de fadas e encantados.", "Aventuras e mistérios leves.", "Histórias para incentivar a escrita."] }
-      };
-
-      let tema = temas.normal;
-      if (mes === 6) {
-        tema = (dia >= 9 && dia <= 14) ? temas.namorados : temas.junina;
-      } else if (mes === 10) {
-        if (dia >= 10 && dia <= 14) {
-          tema = temas.criancas;
-        } else {
-          tema = temas.rosa;
-        }
-      }
-
-      document.body.dataset.theme = tema.classe;
-      document.getElementById("theme-title").textContent = tema.titulo;
-      document.getElementById("theme-description").textContent = tema.descricao;
-      document.getElementById("theme-dates").textContent = tema.datas;
-      document.getElementById("recommendation-title").textContent = tema.recomendacao;
-      document.getElementById("recommendation-intro").textContent = tema.introducao;
-
-      const lista = document.getElementById("recommendation-list");
-      lista.replaceChildren();
-      tema.itens.forEach(item => {
-        const li = document.createElement("li");
-        li.textContent = item;
-        lista.appendChild(li);
-      });
-    }
-    atualizarTema();
-
-    // Reforma Protestante (25 a 31 de outubro)
-    const agoraRef = new Date();
-    const inicioRef = new Date(agoraRef.getFullYear(), 9, 25);
-    const fimRef = new Date(agoraRef.getFullYear(), 9, 31, 23, 59, 59);
-    const secaoReforma = document.getElementById("semana-reforma");
-    if (secaoReforma && agoraRef >= inicioRef && agoraRef <= fimRef) {
-      secaoReforma.style.display = "block";
-    }
-  </script>
-
-  <!-- Script Supabase, Autenticação, Publicação e Modal de Leitura -->
-  <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
-
-    const SUPABASE_URL = 'https://ebpllllnyhztrfgjvomj.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVicGxsbGxueWh6dHJmZ2p2b21qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIyNTAzNzQsImV4cCI6MjEwNzgyNjM3NH0.n9EwuIk7dPZ-FKPCNqNG8y-50rnimIKvEx8uABEI2lk';
-    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-    const pubModo = document.getElementById('pub-modo');
-    const formObra = document.getElementById('form-publicar-obra');
-    const formCapitulo = document.getElementById('form-publicar-capitulo');
-
-    pubModo.addEventListener('change', (e) => {
-      if (e.target.value === 'nova-obra') {
-        formObra.style.display = 'block';
-        formCapitulo.style.display = 'none';
-      } else {
-        formObra.style.display = 'none';
-        formCapitulo.style.display = 'block';
-        carregarLivrosParaSelecao();
-      }
-    });
-
-    const abaLogin = document.getElementById('aba-login');
-    const abaCadastro = document.getElementById('aba-cadastro');
-    const formLogin = document.getElementById('form-login');
-    const formCadastro = document.getElementById('form-cadastro');
-    const selectTipoConta = document.getElementById('tipo-conta');
-    const campoResponsavel = document.getElementById('campo-responsavel');
-
-    abaLogin.addEventListener('click', () => {
-      abaLogin.classList.add('ativa'); abaCadastro.classList.remove('ativa');
-      formLogin.style.display = 'block'; formCadastro.style.display = 'none';
-    });
-
-    abaCadastro.addEventListener('click', () => {
-      abaCadastro.classList.add('ativa'); abaLogin.classList.remove('ativa');
-      formCadastro.style.display = 'block'; formLogin.style.display = 'none';
-    });
-
-    selectTipoConta.addEventListener('change', (e) => {
-      campoResponsavel.style.display = (e.target.value === 'dependente') ? 'block' : 'none';
-    });
-
-    const usuarioSalvo = JSON.parse(localStorage.getItem('usuario_logado'));
-    if (usuarioSalvo) mostrarAreaLogado(usuarioSalvo);
-
-    function mostrarAreaLogado(u) {
-      document.getElementById('nome-usuario-logado').textContent = u.nome;
-      document.getElementById('tipo-conta-logado').textContent = (u.tipo_conta === 'dependente') ? 'Subconta Familiar' : 'Conta Principal';
-      document.getElementById('saldo-creditos').textContent = u.creditos || 30000;
-      document.getElementById('area-deslogado').style.display = 'none';
-      document.getElementById('area-logado').style.display = 'block';
-    }
-
-    formLogin.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const email = document.getElementById('email-login').value.trim();
-      const senha = document.getElementById('senha-login').value;
-      const msg = document.getElementById('mensagem-login');
-
-      msg.textContent = "Verificando..."; msg.style.color = "#593778";
-      const { data, error } = await supabase.from('usuarios').select('*').eq('email', email).eq('senha', senha).single();
-
-      if (error || !data) {
-        msg.textContent = "E-mail ou senha incorretos."; msg.style.color = "red";
-      } else {
-        msg.textContent = "Login realizado com sucesso!"; msg.style.color = "green";
-        localStorage.setItem('usuario_logado', JSON.stringify(data));
-        setTimeout(() => mostrarAreaLogado(data), 1000);
-      }
-    });
-
-    document.getElementById('btn-logoff').addEventListener('click', () => {
-      localStorage.removeItem('usuario_logado');
-      document.getElementById('area-logado').style.display = 'none';
-      document.getElementById('area-deslogado').style.display = 'block';
-      formLogin.reset();
-    });
-
-    formCadastro.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const msg = document.getElementById('mensagem-cadastro');
-      msg.textContent = "Criando conta..."; msg.style.color = '#593778';
-
-      const payload = {
-        nome: document.getElementById('nome-cadastro').value.trim(),
-        cpf: document.getElementById('cpf-cadastro').value.trim(),
-        data_nascimento: document.getElementById('nascimento-cadastro').value,
-        email: document.getElementById('email-cadastro').value.trim(),
-        senha: document.getElementById('senha-cadastro').value,
-        tipo_conta: document.getElementById('tipo-conta').value,
-        cpf_responsavel: document.getElementById('tipo-conta').value === 'dependente' ? document.getElementById('cpf-responsavel').value.trim() : null
-      };
-
-      const { data, error } = await supabase.from('usuarios').insert([payload]).select();
-
-      if (error) {
-        msg.textContent = 'Erro ao cadastrar: ' + error.message; msg.style.color = 'red';
-      } else {
-        msg.textContent = "Cadastro realizado! Faça login."; msg.style.color = 'green';
-        formCadastro.reset();
-        setTimeout(() => abaLogin.click(), 1500);
-      }
-    });
-
-    formObra.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const msg = document.getElementById('msg-publicar');
-      msg.textContent = "Publicando sua história..."; msg.style.color = "#593778";
-
-      let capaUrl = 'https://via.placeholder.com/200x280?text=Sem+Capa';
-      const fileInput = document.getElementById('
+ 
+         <label>Senha</label><br>
+          <input id="senha-login" type="password" required style="width: 100%; padding: 10px; margin: 8px
