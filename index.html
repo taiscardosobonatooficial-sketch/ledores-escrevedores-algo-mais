@@ -3,181 +3,284 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ledores e Escrevedores — Outubro Rosa</title>
+  <title>Ledores Escrevedores Algo Mais</title>
   <style>
     :root {
-      --principal: #c2185b;
-      --principal-claro: #f8bbd0;
-      --fundo: #fff0f5;
-      --texto: #333;
+      --primary-color: #d81b60;
+      --primary-light: #f8bbd0;
+      --secondary-color: #8e24aa;
+      --bg-color: #fff5f8;
+      --text-color: #333;
+      --card-bg: #ffffff;
     }
+
     body {
-      font-family: Arial, sans-serif;
-      background-color: var(--fundo);
-      color: var(--texto);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
       margin: 0;
       padding: 0;
     }
+
     header {
-      background-color: var(--principal);
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
       color: white;
-      padding: 20px;
+      padding: 2rem 1rem;
       text-align: center;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
-    nav {
-      background-color: #880e4f;
-      padding: 10px;
-      text-align: center;
+
+    header h1 {
+      margin: 0;
+      font-size: 2.5rem;
     }
-    nav a {
-      color: white;
-      margin: 0 15px;
-      text-decoration: none;
+
+    header p {
+      margin-top: 0.5rem;
+      opacity: 0.9;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      border-left: 5px solid var(--primary-color);
+    }
+
+    .card h2 {
+      margin-top: 0;
+      color: var(--primary-color);
+    }
+
+    .form-group {
+      margin-bottom: 1.2rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
       font-weight: bold;
     }
-    .banner-rosa {
-      background-color: var(--principal-claro);
-      border: 2px dashed var(--principal);
-      padding: 20px;
-      text-align: center;
-      margin: 20px auto;
-      width: 80%;
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.8rem;
+      border: 1px solid #ccc;
       border-radius: 8px;
+      box-sizing: border-box;
+      font-size: 1rem;
     }
-    .container {
-      width: 90%;
-      max-width: 1200px;
-      margin: 20px auto;
-      background: white;
-      padding: 20px;
+
+    .form-row {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .form-row .form-group {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    button {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      font-size: 1rem;
       border-radius: 8px;
-      box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: background-color 0.2s;
     }
-    .grid-obras {
+
+    button:hover {
+      background-color: #c2185b;
+    }
+
+    .catalog-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 20px;
-      margin-top: 20px;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
     }
-    .obra-item {
-      border: 1px solid #ddd;
-      border-radius: 6px;
-      padding: 12px;
+
+    .obra-card {
+      background: white;
+      border-radius: 10px;
+      padding: 1.2rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      background: #fafafa;
+      border-top: 4px solid var(--secondary-color);
     }
-    .obra-item img {
-      width: 100%;
-      height: 260px;
-      object-fit: cover;
-      border-radius: 4px;
-    }
-    .tag {
-      font-size: 11px;
-      background: var(--principal-claro);
-      color: var(--principal);
-      padding: 3px 6px;
-      border-radius: 4px;
+
+    .obra-badge {
       display: inline-block;
-      margin-top: 6px;
-    }
-    .btn-acao {
-      background-color: var(--principal);
-      color: white;
-      border: none;
-      padding: 10px;
-      border-radius: 4px;
-      cursor: pointer;
-      width: 100%;
-      margin-top: 10px;
+      padding: 0.2rem 0.6rem;
+      border-radius: 12px;
+      font-size: 0.8rem;
       font-weight: bold;
+      margin-right: 0.4rem;
+      margin-bottom: 0.4rem;
     }
+
+    .badge-status-pronto { background-color: #e8f5e9; color: #2e7d32; }
+    .badge-status-producao { background-color: #fff3e0; color: #ef6c00; }
+    .badge-tipo { background-color: #f3e5f5; color: #6a1b9a; }
+    .badge-genero { background-color: #fce4ec; color: #c2185b; }
+
+    /* Modal de leitura */
     .modal {
       display: none;
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5);
+      background: rgba(0,0,0,0.6);
       justify-content: center;
       align-items: center;
       z-index: 1000;
     }
-    .modal-conteudo {
+
+    .modal-content {
       background: white;
-      padding: 25px;
-      border-radius: 8px;
-      width: 600px;
-      max-width: 90%;
-      max-height: 90vh;
+      padding: 2rem;
+      border-radius: 12px;
+      max-width: 700px;
+      width: 90%;
+      max-height: 80vh;
       overflow-y: auto;
+    }
+
+    .close-btn {
+      float: right;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #888;
     }
   </style>
 </head>
 <body>
 
   <header>
-    <h1>📚 Ledores e Escrevedores</h1>
-    <p>Algo Mais — Histórias que aproximam pessoas</p>
+    <h1>Ledores Escrevedores Algo Mais</h1>
+    <p>Plataforma de Leitura, Escrita e Compartilhamento</p>
   </header>
 
-  <nav>
-    <a href="#acervo">Acervo & Estantes</a>
-    <a href="#publicar">Escrever & Publicar</a>
-  </nav>
+  <div class="container">
+    <!-- Formulário de Publicação -->
+    <div class="card">
+      <h2>Publique ou Atualize sua Obra</h2>
+      <form id="publicarForm">
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="titulo">Título da Obra</label>
+            <input type="text" id="titulo" required placeholder="Ex: O Segredo das Palavras">
+          </div>
+          <div class="form-group">
+            <label for="autor">Autor(a)</label>
+            <input type="text" id="autor" required placeholder="Seu nome ou pseudônimo">
+          </div>
+        </div>
 
-  <div class="banner-rosa">
-    <h2>🎀 Outubro Rosa</h2>
-    <p>Histórias de coragem, superação, força e esperança.</p>
-  </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="tipoObra">Tipo de Obra / Formato</label>
+            <select id="tipoObra" onchange="ajustarStatusAutomatico()" required>
+              <option value="Livro único">Livro único</option>
+              <option value="Redação">Redação</option>
+              <option value="Carta">Carta</option>
+              <option value="Jornal">Jornal</option>
+              <option value="Coleção">Coleção</option>
+              <option value="Trilogia">Trilogia</option>
+              <option value="Produção contínua / Diário">Produção contínua / Diário</option>
+            </select>
+          </div>
 
-  <div class="container" id="acervo">
-    <h2>📖 Estantes de Obras</h2>
-    <div class="grid-obras" id="lista-obras">
-      <p style="grid-column: 1/-1; text-align: center;">A carregar acervo do Firebase...</p>
+          <div class="form-group">
+            <label for="statusObra">Status da Obra</label>
+            <select id="statusObra" required>
+              <option value="Pronto">Pronto</option>
+              <option value="Em produção">Em produção (Escrita contínua)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="genero">Gênero / Categoria</label>
+            <select id="genero" required>
+              <option value="Romance">Romance</option>
+              <option value="Conto">Conto</option>
+              <option value="Poesia">Poesia</option>
+              <option value="Música">Música / Letra</option>
+              <option value="Fantasia">Fantasia</option>
+              <option value="Ficção Científica">Ficção Científica</option>
+              <option value="Suspense / Thriller">Suspense / Thriller</option>
+              <option value="Terror / Horror">Terror / Horror</option>
+              <option value="Investigativo / Policial">Investigativo / Policial</option>
+              <option value="Comédia / Humor">Comédia / Humor</option>
+              <option value="Piada">Piada</option>
+              <option value="Drama">Drama</option>
+              <option value="Crônica">Crônica</option>
+              <option value="Documentário">Documentário</option>
+              <option value="Reportagem / Jornalístico">Reportagem / Jornalístico</option>
+              <option value="Biografia / Autobiografia">Biografia / Autobiografia</option>
+              <option value="Infantil / Juvenil">Infantil / Juvenil</option>
+              <option value="HQ / Quadrinhos / Manga">HQ / Quadrinhos / Mangá</option>
+              <option value="Ensaio / Artigo">Ensaio / Artigo</option>
+              <option value="Autoajuda / Desenvolvimento Pessoal">Autoajuda / Desenvolvimento Pessoal</option>
+              <option value="Religioso / Espiritual">Religioso / Espiritual</option>
+              <option value="Técnico / Didático">Técnico / Didático</option>
+              <option value="Outros">Outros</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="conteudo">Conteúdo / Texto</label>
+          <textarea id="conteudo" rows="6" required placeholder="Escreva ou cole seu texto aqui..."></textarea>
+        </div>
+
+        <button type="submit">Publicar Obra</button>
+      </form>
+    </div>
+
+    <!-- Catálogo de Obras -->
+    <div class="card">
+      <h2>Catálogo de Obras</h2>
+      <div id="obrasGrid" class="catalog-grid">
+        <p>Carregando obras...</p>
+      </div>
     </div>
   </div>
 
-  <div class="container" id="publicar">
-    <h2>✍️ Publicar Nova Obra</h2>
-    <form id="form-publicar" style="display: flex; flex-direction: column; gap: 10px; max-width: 600px;">
-      <input type="text" id="pub-titulo" placeholder="Título da Obra" required style="padding: 10px;">
-      <input type="text" id="pub-autor" placeholder="Nome do Autor / Escritor" required style="padding: 10px;">
-      
-      <select id="pub-categoria" style="padding: 10px;">
-        <option value="Livro">Livro</option>
-        <option value="Diario">Diário</option>
-        <option value="Jornal">Jornal / Revista</option>
-        <option value="Redacao">Redação / Documento</option>
-      </select>
-
-      <input type="text" id="pub-genero" placeholder="Gênero (ex: Romance, Poesia, Superação)" required style="padding: 10px;">
-      <input type="text" id="pub-capa-url" placeholder="Link da Imagem da Capa (URL ex: https://...)" style="padding: 10px;">
-      <textarea id="pub-conteudo" placeholder="Conteúdo completo da obra..." rows="6" required style="padding: 10px;"></textarea>
-      
-      <button type="submit" class="btn-acao">Publicar na Estante</button>
-      <p id="msg-pub" style="font-weight: bold; text-align: center;"></p>
-    </form>
-  </div>
-
-  <!-- MODAL DE LEITURA -->
-  <div id="modal-leitura" class="modal">
-    <div class="modal-conteudo">
-      <span id="read-tag" class="tag">Categoria</span>
-      <h2 id="read-titulo" style="color: var(--principal); margin: 10px 0;">Título</h2>
-      <p id="read-autor" style="font-style: italic; color: #555; margin-bottom: 15px;"></p>
-      <hr style="border: 0; border-top: 1px solid #ddd; margin-bottom: 15px;">
-      <div id="read-conteudo" style="white-space: pre-wrap; line-height: 1.6; max-height: 50vh; overflow-y: auto;"></div>
-      <button onclick="document.getElementById('modal-leitura').style.display='none'" class="btn-acao" style="margin-top: 20px;">Fechar Leitura</button>
+  <!-- Modal de Leitura -->
+  <div id="leituraModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="fecharModal()">&times;</span>
+      <h2 id="modalTitulo"></h2>
+      <div id="modalBadges" style="margin-bottom: 1rem;"></div>
+      <p><strong>Autor:</strong> <span id="modalAutor"></span></p>
+      <hr>
+      <div id="modalTexto" style="white-space: pre-wrap; line-height: 1.6;"></div>
     </div>
   </div>
 
-  <!-- FIREBASE SCRIPTS -->
+  <!-- Firebase Scripts -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getFirestore, collection, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-  const firebaseConfig = {
+    // Chaves do Firebase
+    const firebaseConfig = {
       apiKey: "AIzaSyDuJpZ09ofLYD7NjCNkJiC-WoB66qKAvMU",
       authDomain: "ledores-escrevedores-algo-mais.firebaseapp.com",
       projectId: "ledores-escrevedores-algo-mais",
@@ -188,84 +291,104 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-    let obrasCache = [];
 
-    async function carregarObras() {
-      const container = document.getElementById('lista-obras');
-      try {
-        const q = query(collection(db, "livros"));
-        const querySnapshot = await getDocs(q);
-        
-        obrasCache = [];
-        querySnapshot.forEach((doc) => {
-          obrasCache.push({ id: doc.id, ...doc.data() });
-        });
-
-        if (obrasCache.length === 0) {
-          container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #777;">Nenhuma obra cadastrada ainda. Seja o primeiro a publicar abaixo!</p>';
-          return;
-        }
-
-        container.innerHTML = '';
-        obrasCache.forEach(obra => {
-          const item = document.createElement('div');
-          item.className = 'obra-item';
-          item.innerHTML = `
-            <div>
-              <img src="${obra.capa_url || 'https://via.placeholder.com/200x280?text=Sem+Capa'}" alt="Capa">
-              <span class="tag">${obra.categoria || 'Livro'} • ${obra.genero || 'Geral'}</span>
-              <h3 style="margin: 6px 0; color: var(--principal); font-size: 16px;">${obra.titulo}</h3>
-              <p style="font-size: 12px; color: #666; font-style: italic;">Por ${obra.autor}</p>
-            </div>
-            <button class="btn-acao" onclick="abrirLeitor('${obra.id}')">📖 Ler Obra</button>
-          `;
-          container.appendChild(item);
-        });
-      } catch (e) {
-        console.error(e);
-        container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: red;">Erro ao carregar acervo do Firebase: ${e.message}</p>`;
+    // Ajustar automáticos (Ex: Jornal/Diário -> Em Produção)
+    window.ajustarStatusAutomatico = function() {
+      const tipo = document.getElementById("tipoObra").value;
+      const statusSelect = document.getElementById("statusObra");
+      if (tipo === "Jornal" || tipo === "Produção contínua / Diário") {
+        statusSelect.value = "Em produção";
       }
-    }
-
-    window.abrirLeitor = function(id) {
-      const obra = obrasCache.find(o => o.id === id);
-      if (!obra) return;
-      document.getElementById('read-tag').textContent = `${obra.categoria} • ${obra.genero}`;
-      document.getElementById('read-titulo').textContent = obra.titulo;
-      document.getElementById('read-autor').textContent = `Autor(a): ${obra.autor}`;
-      document.getElementById('read-conteudo').textContent = obra.conteudo;
-      document.getElementById('modal-leitura').style.display = 'flex';
     };
 
-    const formPub = document.getElementById('form-publicar');
-    formPub.addEventListener('submit', async (e) => {
+    // Publicar Obra
+    document.getElementById("publicarForm").addEventListener("submit", async (e) => {
       e.preventDefault();
-      const msg = document.getElementById('msg-pub');
-      msg.textContent = "A publicar no Firebase..."; 
+
+      const novaObra = {
+        titulo: document.getElementById("titulo").value,
+        autor: document.getElementById("autor").value,
+        tipo: document.getElementById("tipoObra").value,
+        status: document.getElementById("statusObra").value,
+        genero: document.getElementById("genero").value,
+        conteudo: document.getElementById("conteudo").value,
+        dataCriacao: new Date()
+      };
 
       try {
-        const novaObra = {
-          titulo: document.getElementById('pub-titulo').value.trim(),
-          autor: document.getElementById('pub-autor').value.trim(),
-          categoria: document.getElementById('pub-categoria').value,
-          genero: document.getElementById('pub-genero').value,
-          conteudo: document.getElementById('pub-conteudo').value.trim(),
-          capa_url: document.getElementById('pub-capa-url').value.trim() || 'https://via.placeholder.com/200x280?text=Sem+Capa',
-          criado_em: new Date()
-        };
-
-        await addDoc(collection(db, "livros"), novaObra);
-
-        msg.textContent = "🎉 Publicado com sucesso!"; 
-        msg.style.color = "green";
-        formPub.reset();
+        await addDoc(collection(db, "obras"), novaObra);
+        alert("Obra publicada com sucesso!");
+        document.getElementById("publicarForm").reset();
         carregarObras();
-      } catch (e) {
-        msg.textContent = "Erro ao publicar: " + e.message;
-        msg.style.color = "red";
+      } catch (error) {
+        console.error("Erro ao publicar:", error);
+        alert("Erro ao publicar a obra. Verifique a sua ligação.");
       }
     });
 
+    // Carregar Obras no Catálogo
+    async function carregarObras() {
+      const obrasGrid = document.getElementById("obrasGrid");
+      obrasGrid.innerHTML = "<p>Carregando obras...</p>";
+
+      try {
+        const q = query(collection(db, "obras"), orderBy("dataCriacao", "desc"));
+        const querySnapshot = await getDocs(q);
+
+        if (querySnapshot.empty) {
+          obrasGrid.innerHTML = "<p>Nenhuma obra cadastrada ainda.</p>";
+          return;
+        }
+
+        obrasGrid.innerHTML = "";
+        querySnapshot.forEach((doc) => {
+          const obra = doc.data();
+          
+          const statusClass = obra.status === "Pronto" ? "badge-status-pronto" : "badge-status-producao";
+
+          const card = document.createElement("div");
+          card.className = "obra-card";
+          card.innerHTML = `
+            <div>
+              <h3>${obra.titulo}</h3>
+              <p><em>Por ${obra.autor}</em></p>
+              <div>
+                <span class="obra-badge ${statusClass}">${obra.status}</span>
+                <span class="obra-badge badge-tipo">${obra.tipo}</span>
+                <span class="obra-badge badge-genero">${obra.genero}</span>
+              </div>
+            </div>
+            <button style="margin-top: 1rem;" onclick="abrirLeitura('${escapeHtml(obra.titulo)}', '${escapeHtml(obra.autor)}', '${escapeHtml(obra.status)}', '${escapeHtml(obra.tipo)}', '${escapeHtml(obra.genero)}', '${escapeHtml(obra.conteudo)}')">Ler Obra</button>
+          `;
+          obrasGrid.appendChild(card);
+        });
+      } catch (error) {
+        console.error("Erro ao carregar obras:", error);
+        obrasGrid.innerHTML = "<p>Erro ao carregar obras do banco de dados.</p>";
+      }
+    }
+
+    function escapeHtml(text) {
+      return text.replace(/'/g, "\\'").replace(/"/g, "&quot;").replace(/\n/g, "\\n");
+    }
+
+    window.abrirLeitura = function(titulo, autor, status, tipo, genero, conteudo) {
+      document.getElementById("modalTitulo").innerText = titulo;
+      document.getElementById("modalAutor").innerText = autor;
+      document.getElementById("modalBadges").innerHTML = `
+        <span class="obra-badge ${status === 'Pronto' ? 'badge-status-pronto' : 'badge-status-producao'}">${status}</span>
+        <span class="obra-badge badge-tipo">${tipo}</span>
+        <span class="obra-badge badge-genero">${genero}</span>
+      `;
+      document.getElementById("modalTexto").innerText = conteudo;
+      document.getElementById("leituraModal").style.display = "flex";
+    };
+
+    window.fecharModal = function() {
+      document.getElementById("leituraModal").style.display = "none";
+    };
+
+    // Carregar na abertura
     carregarObras();
   </script>
 </body>
