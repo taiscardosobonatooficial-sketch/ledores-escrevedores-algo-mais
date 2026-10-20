@@ -564,3 +564,261 @@
     <p>© Ledores e Escrevedores — Algo Mais</p>
     <p>Um projeto para quem ama ler e escrever. 💜</p>
   </footer>
+
+  <!-- Scripts de Temas e Supabase -->
+  <script>
+    // Inicialização do Supabase usando a SDK global
+    const SUPABASE_URL = 'https://ebpllllnyhztrfgjvomj.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVicGxsbGxueWh6dHJmZ2p2b21qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAzMDgxNDQsImV4cCI6MjA3NTg4NDE0NH0.R8917Peb5L7Hly43P9q6zL8Jk8_x1x1Q1X1X1X1X1X1';
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    function atualizarTema() {
+      const agora = new Date();
+      const mes = agora.getMonth() + 1;
+      const dia = agora.getDate();
+
+      const temas = {
+        normal: { classe: "normal", titulo: "💜 Bem-vindo ao nosso mundo literário!", descricao: "Sempre há uma nova história esperando por você.", datas: "", recomendacao: "📚 Leituras para descobrir", introducao: "Explore diferentes estilos e encontre histórias que combinem com você.", itens: ["Contos para ler em momentos tranquilos.", "Romances, aventuras e histórias de imaginação.", "Novos autores e capítulos para descobrir."] },
+        junina: { classe: "junina", titulo: "🎉 Arraiá literário!", descricao: "Bandeirinhas, tradições e histórias para aquecer o coração.", datas: "Tema especial de Festa Junina", recomendacao: "🌽 Histórias para ler no arraiá", introducao: "Entre no clima junino com sugestões de leitura.", itens: ["Contos populares e lendas brasileiras.", "Histórias em pequenas cidades.", "Romances e aventuras tradicionais."] },
+        namorados: { classe: "namorados", titulo: "💕 Especial Dia dos Namorados", descricao: "Uma semana dedicada ao amor e às histórias que aproximam corações.", datas: "De 9 a 14 de junho", recomendacao: "❤️ Leituras para aquecer o coração", introducao: "Que tal escolher uma história de amor para esta semana?", itens: ["Romances com encontros inesperados.", "Histórias de amor e reencontros.", "Contos românticos para compartilhar."] },
+        rosa: { classe: "rosa", titulo: "🎀 Outubro Rosa", descricao: "Um espaço para histórias de coragem, acolhimento e esperança.", datas: "Campanha especial de outubro", recomendacao: "🌷 Histórias de força e esperança", introducao: "Conheça temas literários ligados à empatia, autoestima e superação.", itens: ["Narrativas sobre coragem e recomeços.", "Histórias de amizade e acolhimento.", "Livros sobre superar desafios."] },
+        criancas: { classe: "criancas", titulo: "🧸 Viva a Semana das Crianças!", descricao: "Imaginação, descobertas e aventuras para leitores de todas as idades.", datas: "De 10 a 14 de outubro", recomendacao: "🌈 Um mundo de aventuras", introducao: "Celebre a leitura com histórias escolhidas de acordo com a idade.", itens: ["Contos de fadas e encantados.", "Aventuras e mistérios leves.", "Histórias para incentivar a escrita."] }
+      };
+
+      let tema = temas.normal;
+      if (mes === 6) tema = (dia >= 9 && dia <= 14) ? temas.namorados : temas.junina;
+      else if (mes === 10) tema = (dia >= 10 && dia <= 14) ? temas.criancas : temas.rosa;
+
+      document.body.dataset.theme = tema.classe;
+      document.getElementById("theme-title").textContent = tema.titulo;
+      document.getElementById("theme-description").textContent = tema.descricao;
+      document.getElementById("theme-dates").textContent = tema.datas;
+      document.getElementById("recommendation-title").textContent = tema.recomendacao;
+      document.getElementById("recommendation-intro").textContent = tema.introducao;
+
+      const lista = document.getElementById("recommendation-list");
+      lista.replaceChildren();
+      tema.itens.forEach(item => {
+        const li = document.createElement("li");
+        li.textContent = item;
+        lista.appendChild(li);
+      });
+    }
+    atualizarTema();
+
+    // Reforma Protestante
+    const agoraRef = new Date();
+    const inicioRef = new Date(agoraRef.getFullYear(), 9, 27);
+    const fimRef = new Date(agoraRef.getFullYear(), 9, 31, 23, 59, 59);
+    const secaoReforma = document.getElementById("semana-reforma");
+    if (secaoReforma && agoraRef >= inicioRef && agoraRef <= fimRef) {
+      secaoReforma.style.display = "block";
+    }
+
+    // Lógica do Formulário e Interação
+    const pubModo = document.getElementById('pub-modo');
+    const formObra = document.getElementById('form-publicar-obra');
+    const formCapitulo = document.getElementById('form-publicar-capitulo');
+
+    pubModo.addEventListener('change', (e) => {
+      if (e.target.value === 'nova-obra') {
+        formObra.style.display = 'block';
+        formCapitulo.style.display = 'none';
+      } else {
+        formObra.style.display = 'none';
+        formCapitulo.style.display = 'block';
+        carregarLivrosParaSelecao();
+      }
+    });
+
+    const abaLogin = document.getElementById('aba-login');
+    const abaCadastro = document.getElementById('aba-cadastro');
+    const formLogin = document.getElementById('form-login');
+    const formCadastro = document.getElementById('form-cadastro');
+    const selectTipoConta = document.getElementById('tipo-conta');
+    const campoResponsavel = document.getElementById('campo-responsavel');
+
+    abaLogin.addEventListener('click', () => {
+      abaLogin.classList.add('ativa'); abaCadastro.classList.remove('ativa');
+      formLogin.style.display = 'block'; formCadastro.style.display = 'none';
+    });
+
+    abaCadastro.addEventListener('click', () => {
+      abaCadastro.classList.add('ativa'); abaLogin.classList.remove('ativa');
+      formCadastro.style.display = 'block'; formLogin.style.display = 'none';
+    });
+
+    selectTipoConta.addEventListener('change', (e) => {
+      campoResponsavel.style.display = (e.target.value === 'dependente') ? 'block' : 'none';
+    });
+
+    const usuarioSalvo = JSON.parse(localStorage.getItem('usuario_logado'));
+    if (usuarioSalvo) mostrarAreaLogado(usuarioSalvo);
+
+    function mostrarAreaLogado(u) {
+      document.getElementById('nome-usuario-logado').textContent = u.nome;
+      document.getElementById('tipo-conta-logado').textContent = (u.tipo_conta === 'dependente') ? 'Subconta Familiar' : 'Conta Principal';
+      document.getElementById('saldo-creditos').textContent = u.creditos || 30000;
+      document.getElementById('area-deslogado').style.display = 'none';
+      document.getElementById('area-logado').style.display = 'block';
+    }
+
+    formLogin.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email-login').value.trim();
+      const senha = document.getElementById('senha-login').value;
+      const msg = document.getElementById('mensagem-login');
+
+      msg.textContent = "Verificando..."; msg.style.color = "#593778";
+      const { data, error } = await supabaseClient.from('usuarios').select('*').eq('email', email).eq('senha', senha).single();
+
+      if (error || !data) {
+        msg.textContent = "E-mail ou senha incorretos."; msg.style.color = "red";
+      } else {
+        msg.textContent = "Login realizado com sucesso!"; msg.style.color = "green";
+        localStorage.setItem('usuario_logado', JSON.stringify(data));
+        setTimeout(() => mostrarAreaLogado(data), 1000);
+      }
+    });
+
+    document.getElementById('btn-logoff').addEventListener('click', () => {
+      localStorage.removeItem('usuario_logado');
+      document.getElementById('area-logado').style.display = 'none';
+      document.getElementById('area-deslogado').style.display = 'block';
+      formLogin.reset();
+    });
+
+    formCadastro.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const msg = document.getElementById('mensagem-cadastro');
+      msg.textContent = "Criando conta..."; msg.style.color = '#593778';
+
+      const payload = {
+        nome: document.getElementById('nome-cadastro').value.trim(),
+        cpf: document.getElementById('cpf-cadastro').value.trim(),
+        data_nascimento: document.getElementById('nascimento-cadastro').value,
+        email: document.getElementById('email-cadastro').value.trim(),
+        senha: document.getElementById('senha-cadastro').value,
+        tipo_conta: document.getElementById('tipo-conta').value,
+        cpf_responsavel: document.getElementById('tipo-conta').value === 'dependente' ? document.getElementById('cpf-responsavel').value.trim() : null
+      };
+
+      const { data, error } = await supabaseClient.from('usuarios').insert([payload]).select();
+
+      if (error) {
+        msg.textContent = 'Erro ao cadastrar: ' + error.message; msg.style.color = 'red';
+      } else {
+        msg.textContent = "Cadastro realizado! Faça login."; msg.style.color = 'green';
+        formCadastro.reset();
+        setTimeout(() => abaLogin.click(), 1500);
+      }
+    });
+
+    // Publicação de Nova Obra
+    formObra.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const msg = document.getElementById('msg-publicar');
+      msg.textContent = "Publicando sua história..."; msg.style.color = "#593778";
+
+      const capaUrlInput = document.getElementById('pub-capa-url').value.trim();
+      // Capa padrão estilizada em SVG com as cores do site
+      const capaPadrao = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="280" viewBox="0 0 200 280"><rect width="200" height="280" fill="%23593778"/><text x="50%" y="45%" fill="white" font-family="Georgia" font-size="16" text-anchor="middle">Ledores %26</text><text x="50%" y="55%" fill="white" font-family="Georgia" font-size="16" text-anchor="middle">Escrevedores</text></svg>';
+      const capaFinal = capaUrlInput || capaPadrao;
+
+      const payloadObra = {
+        titulo: document.getElementById('pub-titulo').value.trim(),
+        autor: document.getElementById('pub-autor').value.trim(),
+        categoria: document.getElementById('pub-categoria').value,
+        genero: document.getElementById('pub-genero').value.trim() || 'Geral',
+        capa_url: capaFinal,
+        sinopse: document.getElementById('pub-sinopse').value.trim(),
+        conteudo: document.getElementById('pub-conteudo').value.trim()
+      };
+
+      const { data, error } = await supabaseClient.from('livros').insert([payloadObra]).select();
+
+      if (error) {
+        msg.textContent = "Erro ao publicar: " + error.message; msg.style.color = "red";
+      } else {
+        msg.textContent = "🎉 Obra publicada com sucesso no site!"; msg.style.color = "green";
+        formObra.reset();
+        carregarObras();
+      }
+    });
+
+    async function carregarLivrosParaSelecao() {
+      const select = document.getElementById('select-obra-existente');
+      select.innerHTML = '<option value="">Carregando suas obras...</option>';
+      const { data } = await supabaseClient.from('livros').select('id, titulo');
+
+      if (data && data.length > 0) {
+        select.innerHTML = '<option value="">Selecione uma obra...</option>';
+        data.forEach(item => {
+          select.innerHTML += `<option value="${item.id}">${item.titulo}</option>`;
+        });
+      } else {
+        select.innerHTML = '<option value="">Nenhuma obra encontrada</option>';
+      }
+    }
+
+    formCapitulo.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const msg = document.getElementById('msg-capitulo');
+      const livroId = document.getElementById('select-obra-existente').value;
+      const tituloCap = document.getElementById('cap-titulo').value.trim();
+      const conteudoCap = document.getElementById('cap-conteudo').value.trim();
+
+      if (!livroId) {
+        msg.textContent = "Selecione uma obra válida."; msg.style.color = "red";
+        return;
+      }
+
+      msg.textContent = "Anexando capítulo..."; msg.style.color = "#593778";
+
+      const { data: livro } = await supabaseClient.from('livros').select('conteudo').eq('id', livroId).single();
+
+      if (livro) {
+        const conteudoAtualizado = livro.conteudo + `\n\n---\n### 📖 ${tituloCap}\n\n` + conteudoCap;
+
+        const { error } = await supabaseClient.from('livros').update({ conteudo: conteudoAtualizado }).eq('id', livroId);
+
+        if (error) {
+          msg.textContent = "Erro ao adicionar capítulo: " + error.message; msg.style.color = "red";
+        } else {
+          msg.textContent = "📖 Capítulo adicionado com sucesso!"; msg.style.color = "green";
+          formCapitulo.reset();
+          carregarObras();
+        }
+      }
+    });
+
+    async function carregarObras() {
+      const container = document.getElementById('lista-obras');
+      const { data, error } = await supabaseClient.from('livros').select('*').order('created_at', { ascending: false });
+
+      if (error || !data || data.length === 0) {
+        container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #777;">Nenhuma obra publicada ainda. Seja a primeira a escrever!</p>';
+        return;
+      }
+
+      container.innerHTML = '';
+      data.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'obra-item';
+        const capaPadrao = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="280" viewBox="0 0 200 280"><rect width="200" height="280" fill="%23593778"/><text x="50%" y="45%" fill="white" font-family="Georgia" font-size="16" text-anchor="middle">Ledores %26</text><text x="50%" y="55%" fill="white" font-family="Georgia" font-size="16" text-anchor="middle">Escrevedores</text></svg>';
+        
+        div.innerHTML = `
+          <img src="${item.capa_url || capaPadrao}" alt="Capa da Obra">
+          <span class="tag-categoria">${item.categoria || 'Livro'} • ${item.genero || 'Geral'}</span>
+          <h4>${item.titulo}</h4>
+          <div class="autor">Por: ${item.autor}</div>
+          <p style="font-size: 12px; color: #555;">${item.sinopse ? item.sinopse.substring(0, 70) + '...' : ''}</p>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    carregarObras();
+  </script>
+</body>
+</html>
