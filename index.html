@@ -199,24 +199,20 @@
     </div>
   </div>
 
-  <!-- Lógica JavaScript + Supabase -->
-  <script type="module">
- import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+incipal)';
 
-<!-- Lógica JavaScript + Supabase -->
+<!-- Lógica JavaScript + Supabase + Sistema de Perfis e Punições -->
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
     const SUPABASE_URL = 'https://lytfzyaxtzwkycvusod.supabase.co';
-    // Cole aqui a chave anon que começa com eyJ...
-    const SUPABASE_ANON_KEY =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx5dGZ5enlheHR6d2t5Y3Z1c29kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI0NjI4NDAsImV4cCI6MjEwODAzODg0MH0.8J0_9kJOSxCYWniknIatFy2aNE_uX_f7UX1CrQolS3c
-
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx5dGZ5enlheHR6d2t5Y3Z1c29kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI0NjI4NDAsImV4cCI6MjEwODAzODg0MH0.8J0_9kJOSxCYWniknIatFy2aNE_uX_f7UX1CrQolS3c';
+    
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     let obrasCache = [];
-    let modoAuth = 'login';
 
-    // 1. Controle de Usuários
+    // 1. Controle de Usuários e Validação de Punições / Suspensões
     async function verificarUsuario() {
       try {
         const { data: { user } } = await supabase.auth.getUser();
@@ -226,45 +222,126 @@
         const btnLogout = document.getElementById('btn-logout');
 
         if (user) {
-          userInfo.textContent = `👤 ${user.email}`;
-          btnLogin.style.display = 'none';
-          btnCad.style.display = 'none';
-          btnLogout.style.display = 'inline-block';
+          // Busca o perfil do usuário para verificar o status da conta
+          const { data: perfil } = await supabase.from('profiles').select('*').eq('id', user.id).single();
+
+          if (perfil) {
+            // Verifica se o usuário está suspenso temporariamente
+            if (perfil.status_conta !== 'ativo' && perfil.fim_suspensao) {
+              const agora = new Date();
+              const fim = new Date(perfil.fim_suspensao);
+
+              if (agora < fim) {
+                alert(`Sua conta está SUSPENSA até ${fim.toLocaleDateString('pt-BR')} por descumprimento das regras de convivência.`);
+                await supabase.auth.signOut();
+                location.reload();
+                return;
+              }
+            }
+
+            userInfo.textContent = `👤 ${perfil.nome} (${perfil.tipo_usuario.toUpperCase()} - ${perfil.modalidade.toUpperCase()})`;
+          } else {
+            userInfo.textContent = `👤 ${user.email}`;
+          }
+
+          if (btnLogin) btnLogin.style.display = 'none';
+          if (btnCad) btnCad.style.display = 'none';
+          if (btnLogout) btnLogout.style.display = 'inline-block';
         } else {
           userInfo.textContent = '👤 Visitante (Não conectado)';
-          btnLogin.style.display = 'inline-block';
-          btnCad.style.display = 'inline-block';
-          btnLogout.style.display = 'none';
+          if (btnLogin) btnLogin.style.display = 'inline-block';
+          if (btnCad) btnCad.style.display = 'inline-block';
+          if (btnLogout) btnLogout.style.display = 'none';
         }
       } catch (err) {
-        console.log("Aguardando login:", err);
+        console.log("Status de autenticação:", err);
       }
     }
 
+    // Modal de Login / Cadastro
     window.abrirModalAuth = function(tipo) {
-      modoAuth = tipo;
-      document.getElementById('auth-titulo').textContent = tipo === 'login' ? 'Entrar na Conta' : 'Criar Nova Conta';
-      document.getElementById('btn-auth-submit').textContent = tipo === 'login' ? 'Entrar' : 'Cadastrar';
-      document.getElementById('auth-msg').textContent = '';
       document.getElementById('modal-auth').style.display = 'flex';
+      const containerCadastro = document.getElementById('campos-cadastro-extra');
+      const titulo = document.getElementById('auth-titulo');
+      const btnSubmit = document.getElementById('btn-auth-submit');
+
+      if (tipo === 'cadastro') {
+        titulo.textContent = 'Criar Nova Conta';
+        btnSubmit.textContent = 'Cadastrar e Concordar com os Termos';
+        if (containerCadastro) containerCadastro.style.display = 'block';
+      } else {
+        titulo.textContent = 'Entrar na Conta';
+        btnSubmit.textContent = 'Entrar';
+        if (containerCadastro) containerCadastro.style.display = 'none';
+      }
     };
 
     document.getElementById('form-auth').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const email = document.getElementById('auth-email').value;
+      const email = document.getElementById('auth-email').value.trim();
       const password = document.getElementById('auth-senha').value;
       const msg = document.getElementById('auth-msg');
 
-      msg.textContent = 'Aguarde...'; msg.style.color = 'var(--principal)';
+      msg.textContent = 'Aguarde...'; 
+      msg.style.color = 'var(--principal)';
 
-      if (modoAuth === 'cadastro') {
-        const { error } = await supabase.auth.signUp({ email, password });
-        if (error) { msg.textContent = error.message; msg.style.color = 'red'; }
-        else { msg.textContent = 'Cadastro realizado! Verifique seu e-mail para confirmar.'; msg.style.color = 'green'; }
+      const ehCadastro = document.getElementById('campos-cadastro-extra') && 
+                         document.getElementById('campos-cadastro-extra').style.display !== 'none';
+
+      if (ehCadastro) {
+        const nome = document.getElementById('cad-nome').value.trim();
+        const cpf = document.getElementById('cad-cpf').value.trim();
+        const telefone = document.getElementById('cad-telefone').value.trim();
+        const tipo_usuario = document.getElementById('cad-tipo').value;
+        const modalidade = document.getElementById('cad-modalidade').value;
+
+        // Trava de segurança: Checa se o CPF já consta na lista de banidos
+        const { data: cpfBanido } = await supabase.from('cpfs_banidos').select('*').eq('cpf', cpf).single();
+        if (cpfBanido) {
+          msg.textContent = 'Este CPF está permanentemente BANIDO da plataforma por descumprimento das regras.';
+          msg.style.color = 'red';
+          return;
+        }
+
+        const { data: authData, error: authError } = await supabase.auth.signUp({ email, password });
+        
+        if (authError) {
+          msg.textContent = authError.message; 
+          msg.style.color = 'red';
+          return;
+        }
+
+        if (authData.user) {
+          const { error: profileError } = await supabase.from('profiles').insert([{
+            id: authData.user.id,
+            nome,
+            email,
+            cpf,
+            telefone,
+            tipo_usuario,
+            modalidade,
+            strikes: 0,
+            status_conta: 'ativo'
+          }]);
+
+          if (profileError) {
+            msg.textContent = "Erro ao registrar perfil: " + profileError.message;
+            msg.style.color = 'red';
+          } else {
+            msg.textContent = '🎉 Conta criada com sucesso!';
+            msg.style.color = 'green';
+            setTimeout(() => {
+              document.getElementById('modal-auth').style.display = 'none';
+              verificarUsuario();
+            }, 1500);
+          }
+        }
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) { msg.textContent = 'Erro ao entrar: ' + error.message; msg.style.color = 'red'; }
-        else {
+        if (error) {
+          msg.textContent = 'Erro ao entrar: ' + error.message; 
+          msg.style.color = 'red';
+        } else {
           document.getElementById('modal-auth').style.display = 'none';
           verificarUsuario();
         }
@@ -276,26 +353,28 @@
       verificarUsuario();
     };
 
-    // 2. Carregar Obras e Filtro por Estante
+    // 2. Carregar e Filtrar Obras
     async function carregarObras() {
       const container = document.getElementById('lista-obras');
       try {
         const { data, error } = await supabase.from('livros').select('*').order('id', { ascending: false });
 
         if (error) {
-          container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: red;">Erro ao carregar: ${error.message}</p>`;
+          container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: red;">Erro ao carregar obras: ${error.message}</p>`;
           return;
         }
 
         obrasCache = data || [];
         renderizarObras(obrasCache);
       } catch (e) {
-        container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: red;">Erro ao conectar ao banco de dados: ${e.message}</p>`;
+        container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: red;">Erro ao conectar: ${e.message}</p>`;
       }
     }
 
     function renderizarObras(lista) {
       const container = document.getElementById('lista-obras');
+      if (!container) return;
+
       if (lista.length === 0) {
         container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #777;">Nenhuma obra nesta estante ainda.</p>';
         return;
@@ -343,7 +422,7 @@
       document.getElementById('modal-leitura').style.display = 'flex';
     };
 
-    // 4. Publicar
+    // 4. Publicar Nova Obra
     document.getElementById('form-publicar').addEventListener('submit', async (e) => {
       e.preventDefault();
       const msg = document.getElementById('msg-pub');
@@ -375,7 +454,7 @@
       const { error } = await supabase.from('livros').insert([novaObra]);
 
       if (error) {
-        msg.textContent = "Erro: " + error.message; msg.style.color = "red";
+        msg.textContent = "Erro ao publicar: " + error.message; msg.style.color = "red";
       } else {
         msg.textContent = "🎉 Publicado com sucesso!"; msg.style.color = "green";
         document.getElementById('form-publicar').reset();
@@ -383,9 +462,10 @@
       }
     });
 
+    // Inicialização
     verificarUsuario();
     carregarObras();
-  </script>
-  </script>
+  </script>  
+  
 </body>
 </html>
