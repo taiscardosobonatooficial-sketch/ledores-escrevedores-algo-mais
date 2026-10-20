@@ -316,7 +316,7 @@
       }
     }
 
-    // Modal de Autenticação (Alternar entre Login e Cadastro)
+  // Modal de Autenticação (Alternar entre Login e Cadastro)
     window.abrirModalAuth = function(tipo) {
       document.getElementById('modal-auth').style.display = 'flex';
       const containerCadastro = document.getElementById('campos-cadastro-extra');
@@ -340,7 +340,7 @@
       const password = document.getElementById('auth-senha').value;
       const msg = document.getElementById('auth-msg');
 
-      msg.textContent = 'Aguarde...'; 
+      msg.textContent = 'A processar...'; 
       msg.style.color = 'var(--principal)';
 
       const ehCadastro = document.getElementById('campos-cadastro-extra') && 
@@ -354,8 +354,70 @@
         const modalidade = document.getElementById('cad-modalidade').value;
 
         if (!nome || !cpf || !telefone) {
-          msg.textContent = 'Preencha todos os campos obrigatórios (Nome, CPF e Telefone).';
+          msg.textContent = 'Por favor, preencha Nome, CPF e Telefone.';
           msg.style.color = 'red';
+          return;
+        }
+
+        try {
+          // 1. Criar o usuário no Supabase Auth
+          const { data: authData, error: authError } = await supabase.auth.signUp({ 
+            email: email, 
+            password: password 
+          });
+          
+          if (authError) {
+            msg.textContent = 'Erro no registo: ' + authError.message; 
+            msg.style.color = 'red';
+            return;
+          }
+
+          if (authData?.user) {
+            // 2. Registar o perfil associado com upsert para evitar bloqueios
+            const { error: profileError } = await supabase.from('profiles').upsert([{
+              id: authData.user.id,
+              nome: nome,
+              email: email,
+              cpf: cpf,
+              telefone: telefone,
+              tipo_usuario: tipo_usuario,
+              modalidade: modalidade,
+              strikes: 0,
+              status_conta: 'ativo'
+            }]);
+
+            if (profileError) {
+              msg.textContent = "Erro no perfil: " + profileError.message;
+              msg.style.color = 'orange';
+            } else {
+              msg.textContent = '🎉 Conta criada com sucesso!';
+              msg.style.color = 'green';
+              setTimeout(() => {
+                document.getElementById('modal-auth').style.display = 'none';
+                verificarUsuario();
+              }, 1200);
+            }
+          }
+        } catch (err) {
+          msg.textContent = 'Erro de ligação: ' + (err.message || 'Verifique a ligação');
+          msg.style.color = 'red';
+        }
+      } else {
+        try {
+          const { error } = await supabase.auth.signInWithPassword({ email, password });
+          if (error) {
+            msg.textContent = 'Erro ao entrar: ' + error.message; 
+            msg.style.color = 'red';
+          } else {
+            document.getElementById('modal-auth').style.display = 'none';
+            verificarUsuario();
+          }
+        } catch (err) {
+          msg.textContent = 'Erro ao entrar: ' + err.message;
+          msg.style.color = 'red';
+       }
+      }
+    });
           return;
         }
 
